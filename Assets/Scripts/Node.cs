@@ -13,6 +13,7 @@ public class Node : MonoBehaviour
     void Start()
     {
         parent.transform.GetChild(0).gameObject.SetActive(false);
+        GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
     }
 
     // Update is called once per frame

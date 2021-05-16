@@ -79,9 +79,9 @@ public class VoxelGrid
             LineRenderer renderer = edgeLine.AddComponent<LineRenderer>();
             renderer.SetPosition(0, edge.Source.VoxelGO.transform.position);
             renderer.SetPosition(1, edge.Target.VoxelGO.transform.position);
-            renderer.startWidth = 0.05f;
+            renderer.startWidth = 0.02f;
             renderer.startColor = new Color(1f, 0f, 0f);
-            renderer.endWidth = 0.05f;
+            renderer.endWidth = 0.02f;
             renderer.startColor = new Color(0f, 1f, 0f);
             _edgeLines.Add(edgeLine);
         }

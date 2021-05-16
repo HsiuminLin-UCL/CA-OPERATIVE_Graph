@@ -77,16 +77,23 @@ public class GraphManager : MonoBehaviour
         {
             ReturnNodeToVoxel();
         }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            PrivateNodeToVoxel();
+        }
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            ReturnPrivateNodeToVoxel();
+        }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            //GetNeighborVoxel();
+            GetNeighborVoxel();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            RandomWalk(publicPath[1], publicPath);
-
+            RandomWalk(publicPath[0], publicPath);
         }
 
     }
@@ -98,7 +105,6 @@ public class GraphManager : MonoBehaviour
         
         Dijkstra<Voxel, Edge<Voxel>> dijkstra = new EasyGraph.Dijkstra<Voxel, Edge<Voxel>>(_voxelGrid.VoxelGraph);
         publicPath.AddRange(dijkstra.GetShortestPath(targetPool.Dequeue(), targetPool.Dequeue()));
-        Debug.Log(publicPath.Count);
         while (targetPool.Count > 0)
         {
             //Get the distance from the next point to all the points in path
@@ -132,7 +138,6 @@ public class GraphManager : MonoBehaviour
         //Get the node nearby the path 
         //Use the collider? or other method?
         //Change the state of node to voxel
-
     }
 
 
@@ -141,7 +146,7 @@ public class GraphManager : MonoBehaviour
     void RandomWalk(Voxel targetVoxel, List<Voxel> path)
     {
         RandomWalk a = new RandomWalk();
-        a.RunScript(5, targetVoxel.Index);
+        a.RunScript(3, targetVoxel.Index);
         foreach (var index in a.PList)
         {
             privatePath.Add(_voxelGrid.GetVoxelByIndex(index));
@@ -175,6 +180,22 @@ public class GraphManager : MonoBehaviour
     void ReturnNodeToVoxel()
     {
         foreach (var voxel in publicPath)
+        {
+            voxel.VoxelGO.transform.GetChild(0).gameObject.SetActive(false);
+        }
+    }
+    
+    void PrivateNodeToVoxel()
+    {
+        foreach (var voxel in privatePath)
+        {
+            voxel.VoxelGO.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    void ReturnPrivateNodeToVoxel()
+    {
+        foreach (var voxel in privatePath)
         {
             voxel.VoxelGO.transform.GetChild(0).gameObject.SetActive(false);
         }
