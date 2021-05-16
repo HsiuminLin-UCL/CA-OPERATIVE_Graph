@@ -6,9 +6,8 @@ using System.Linq;
 
 public class GraphManager : MonoBehaviour
 {
-
-    List<GameObject> _nodes;
     [SerializeField]
+    List<GameObject> _nodes;
     List<Material> _materials;
 
     List<Edge<GameObject>> _edges;
@@ -19,24 +18,21 @@ public class GraphManager : MonoBehaviour
     // VoxelGrid and Voxel List
     VoxelGrid _voxelGrid;
     List<Voxel> _targets = new List<Voxel>();
-    List<Voxel> path = new List<Voxel>();
-
-    List<Voxel> allpath = new List<Voxel>();
-
+    List<Voxel> publicPath = new List<Voxel>();
+    
+    List<Voxel> privatePath = new List<Voxel>();
 
     Voxel _start, _stop;
 
-
-
+    //RandomWalk randomWalk;
+    //List<Voxel> randomwalk = new List<Voxel>();
 
     // Start is called before the first frame update
     void Start()
     {
         _voxelGrid = new VoxelGrid(new Vector3Int(6, 3, 10), transform.position, 1f);
-
         _edges = new List<Edge<GameObject>>();
 
-        //ResetGraphLines();
     }
 
     // Update is called once per frame
@@ -46,7 +42,6 @@ public class GraphManager : MonoBehaviour
         {
             CreatePaths();
         }
-
         //ResetGraphLines();
 
         RaycastHit hit;
@@ -82,26 +77,39 @@ public class GraphManager : MonoBehaviour
         {
             ReturnNodeToVoxel();
         }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            //GetNeighborVoxel();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RandomWalk(publicPath[1], publicPath);
+
+        }
+
     }
 
+    // Should be layer by layer
     void CreatePaths()
     {
         Queue<Voxel> targetPool = new Queue<Voxel>(_targets);
         
         Dijkstra<Voxel, Edge<Voxel>> dijkstra = new EasyGraph.Dijkstra<Voxel, Edge<Voxel>>(_voxelGrid.VoxelGraph);
-        path.AddRange(dijkstra.GetShortestPath(targetPool.Dequeue(), targetPool.Dequeue()));
-        //Debug.Log(path.Count);
+        publicPath.AddRange(dijkstra.GetShortestPath(targetPool.Dequeue(), targetPool.Dequeue()));
+        Debug.Log(publicPath.Count);
         while (targetPool.Count > 0)
         {
             //Get the distance from the next point to all the points in path
             //take the shortest distance
             //store the shortest path into path
             Voxel nextVoxel = targetPool.Dequeue();
-            SetNextShortestPath(nextVoxel, path, dijkstra);
+            SetNextShortestPath(nextVoxel, publicPath, dijkstra);
 
         }
-        Debug.Log(path.Count);
-        foreach (var voxel in path)
+        Debug.Log("public " + publicPath.Count);
+        foreach (var voxel in publicPath)
         {
             voxel.SetAsPath();
         }
@@ -117,18 +125,48 @@ public class GraphManager : MonoBehaviour
         path.AddRange(newpath);
     }
 
-    void GetNeighborVoxel(Voxel targetVoxel, List<Voxel> path, List<Voxel> newpath)
+    void GetNeighborVoxel()
     {
-        //Get the All Path in List? or Array?
-        List<Voxel> allpath = new List<Voxel>();
+        //Get all path in a List
+        //List<Voxel> allpath = new List<Voxel>();
+        //Get the node nearby the path 
+        //Use the collider? or other method?
+        //Change the state of node to voxel
 
+    }
+
+
+
+
+    void RandomWalk(Voxel targetVoxel, List<Voxel> path)
+    {
+        RandomWalk a = new RandomWalk();
+        a.RunScript(5, targetVoxel.Index);
+        foreach (var index in a.PList)
+        {
+            privatePath.Add(_voxelGrid.GetVoxelByIndex(index));
+        }
+        //Get the List from all the node
+        //Remove the List from the shortest path
+        //Run the randomwalk from List and start around the shortesr path
+        //Also set up the voxel to the pathvoxel
+
+        Debug.Log("pirvate " + privatePath.Count);
+        foreach (var voxel in privatePath)
+        {
+            voxel.SetAsRandomPath();
+        }
+
+        //not override with the same walker
+        //do more randomwalkers
+        //not override the path voxel
 
     }
 
 
     void NodeToVoxel()
     {
-        foreach (var voxel in path)
+        foreach (var voxel in publicPath)
         {
             voxel.VoxelGO.transform.GetChild(0).gameObject.SetActive(true);
         }
@@ -136,29 +174,9 @@ public class GraphManager : MonoBehaviour
 
     void ReturnNodeToVoxel()
     {
-        foreach (var voxel in path)
+        foreach (var voxel in publicPath)
         {
             voxel.VoxelGO.transform.GetChild(0).gameObject.SetActive(false);
         }
     }
-
-
-    //void ResetGraphLines()
-    //{
-    //    _edgeLines.ForEach(e => GameObject.Destroy(e));
-    //    _edgeLines.Clear();
-    //    List<Edge<GameObject>> edges = _undirectedGraph.GetEdges();
-    //    foreach (var edge in edges)
-    //    {
-    //        GameObject edgeLine = new GameObject($"Edge {_edgeLines.Count}");
-    //        LineRenderer renderer = edgeLine.AddComponent<LineRenderer>();
-    //        renderer.SetPosition(0, edge.Source.transform.position);
-    //        renderer.SetPosition(1, edge.Target.transform.position);
-    //        renderer.startWidth = 0.2f;
-    //        renderer.startColor = new Color(1f, 0f, 0f);
-    //        renderer.endWidth = 0.2f;
-    //        renderer.startColor = new Color(0f, 1f, 0f);
-    //        _edgeLines.Add(edgeLine);
-    //    }
-    //}
 }

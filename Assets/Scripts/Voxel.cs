@@ -43,6 +43,8 @@ public class Voxel : IEquatable<Voxel>
     public GameObject VoxelGO;
     public bool IsPath;
 
+    public bool IsRandomPath;
+
     #endregion
 
     private float _state;
@@ -88,10 +90,16 @@ public class Voxel : IEquatable<Voxel>
 
         }
     }
-    
-    public void SetAsVoxel()
+
+    public void SetAsRandomPath()
     {
-        
+        if (!IsTarget && !IsPath)
+        {
+            VoxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/RandomPath");
+            VoxelGO.tag = "RandomPathVoxel";
+            IsRandomPath = true;
+
+        }
     }
 
     #endregion

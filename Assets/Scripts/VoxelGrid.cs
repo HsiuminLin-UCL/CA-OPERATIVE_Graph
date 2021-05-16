@@ -65,28 +65,7 @@ public class VoxelGrid
         VoxelGraph = new UndirecteGraph<Voxel, Edge<Voxel>>(_edges);
         _edgeLines = new List<GameObject>();
         ResetGraphLines();
-        //SetGradient();
     }
-
-    //void SetGradient()
-    //{
-
-    //    // Populate the color keys at the relative time 0 and 1 (0 and 100%)
-    //    GradientColorKey[] colorKey = new GradientColorKey[2];
-    //    colorKey[0].color = Color.green;
-    //    colorKey[0].time = 0.0f;
-    //    colorKey[1].color = Color.red;
-    //    colorKey[1].time = 1.0f;
-
-    //    // Populate the alpha  keys at relative time 0 and 1  (0 and 100%)
-    //    GradientAlphaKey[] alphaKey = new GradientAlphaKey[2];
-    //    alphaKey[0].alpha = 1.0f;
-    //    alphaKey[0].time = 0.0f;
-    //    alphaKey[1].alpha = 0.0f;
-    //    alphaKey[1].time = 1.0f;
-
-    //    _gradient.SetKeys(colorKey, alphaKey);
-    //}
 
     void ResetGraphLines()
     {
@@ -107,26 +86,5 @@ public class VoxelGrid
             _edgeLines.Add(edgeLine);
         }
     }
-
-    //void ColourNodes()
-    //{
-    //    double maxWeight = _dijkstra.MaxDistance;
-    //    //Debug.Log($"Max weight {maxWeight}");
-    //    for (int x = 0; x < GridSize.x; x++)
-    //        for (int y = 0; y < GridSize.y; y++)
-    //            for (int z = 0; z < GridSize.z; z++)
-    //            {
-    //                double weight = _dijkstra.VertexWeight(Voxels[x, y, z]);
-    //                Material material = Voxels[x, y, z].VoxelGO.GetComponent<MeshRenderer>().material;
-    //                material.color = _gradient.Evaluate((float)Remap(weight, 0, maxWeight, 0, 1));
-    //            }
-    //}
-
-    //double Remap(double value, double oldMin, double oldMax, double newMin, double newMax)
-    //{
-    //    var remappedValue = newMin + (value - oldMin) * (newMax - newMin) / (oldMax - oldMin);
-    //    //Debug.Log($"Remapped value {remappedValue}, value: {value}, oldMin: {oldMin}, oldMax: {oldMax}, newMin: {newMax}, newMax: {newMax}");
-    //    return remappedValue;
-    //}
-
+    public Voxel GetVoxelByIndex(Vector3Int index) => Voxels[index.x, index.y, index.z];
 }

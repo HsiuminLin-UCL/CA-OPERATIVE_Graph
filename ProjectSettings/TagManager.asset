@@ -12,6 +12,7 @@ TagManager:
   - TargetNode
   - Voxel
   - Path
+  - RandomPathVoxel
   layers:
   - Default
   - TransparentFX
