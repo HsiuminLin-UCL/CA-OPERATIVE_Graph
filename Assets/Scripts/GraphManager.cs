@@ -164,7 +164,7 @@ public class GraphManager : MonoBehaviour
 
         //not override with the same walker
         //do more randomwalkers
-        //not override the path voxel
+        
 
     }
 

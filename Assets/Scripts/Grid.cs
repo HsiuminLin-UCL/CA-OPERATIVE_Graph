@@ -21,6 +21,7 @@ public class Grid : MonoBehaviour
     void Start()
     {
         GameObject voxelPrefab = Resources.Load<GameObject>("Prefabs/Node");
+        
         _grid = new GameObject[_gridDimensions.x, _gridDimensions.y];
         _edges = new List<Edge<GameObject>>();
 
