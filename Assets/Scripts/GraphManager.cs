@@ -93,7 +93,7 @@ public class GraphManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            RandomWalk(publicPath[0], publicPath);
+            RandomWalk(publicPath);
         }
 
     }
@@ -143,29 +143,28 @@ public class GraphManager : MonoBehaviour
 
 
 
-    void RandomWalk(Voxel targetVoxel, List<Voxel> path)
+    void RandomWalk(List<Voxel> path)
     {
-        RandomWalk a = new RandomWalk();
-        a.RunScript(3, targetVoxel.Index);
-        foreach (var index in a.PList)
+        foreach (var voxel in path)
         {
-            privatePath.Add(_voxelGrid.GetVoxelByIndex(index));
-        }
-        //Get the List from all the node
-        //Remove the List from the shortest path
-        //Run the randomwalk from List and start around the shortesr path
-        //Also set up the voxel to the pathvoxel
+            RandomWalk a = new RandomWalk();
+            a.RunScript(3, voxel.Index);
+            foreach (var index in a.PList)
+            {
+                if (Util.CheckBounds(index, _voxelGrid)) privatePath.Add(_voxelGrid.GetVoxelByIndex(index));
+            }
+            //Get the List from all the node
+            //Remove the List from the shortest path
+            //Run the randomwalk from List and start around the shortesr path
+            //Also set up the voxel to the pathvoxel
 
+            
+        }
         Debug.Log("pirvate " + privatePath.Count);
         foreach (var voxel in privatePath)
         {
             voxel.SetAsRandomPath();
         }
-
-        //not override with the same walker
-        //do more randomwalkers
-        
-
     }
 
 
