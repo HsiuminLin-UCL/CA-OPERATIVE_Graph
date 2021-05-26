@@ -114,18 +114,20 @@ public class GraphManager : MonoBehaviour
     void SetNextShortestPath(Voxel targetVoxel, List<Voxel> path, Dijkstra<Voxel, Edge<Voxel>> dijkstra)
     {
         //Set Next Path into X,Z Position
-        for (int x = 0; x < _voxelGrid.GridSize.x; x++)
+        dijkstra.DijkstraCalculateWeights(targetVoxel);
+        //Voxel closestVoxel = path.MinBy(v => dijkstra.VertexWeight(v));
+        Voxel closestVoxel;
+        if (path.Any(p => p.Index.y == targetVoxel.Index.y))
         {
-            for (int z = 0; z < _voxelGrid.GridSize.z; z++)
-            {
-                dijkstra.DijkstraCalculateWeights(targetVoxel);
-                Voxel closestVoxel = path.MinBy(v => dijkstra.VertexWeight(v));
-                List<Voxel> newpath = new List<Voxel>();
-                newpath.AddRange(dijkstra.GetShortestPath(targetVoxel, closestVoxel));
-                newpath.Remove(closestVoxel);
-                path.AddRange(newpath);
-            }
+            var layerVoxels = path.Where(p => p.Index.y == targetVoxel.Index.y);
+            closestVoxel = layerVoxels.MinBy(v => dijkstra.VertexWeight(v));
         }
+        else closestVoxel = path.MinBy(v => dijkstra.VertexWeight(v));
+
+        List<Voxel> newpath = new List<Voxel>();
+        newpath.AddRange(dijkstra.GetShortestPath(targetVoxel, closestVoxel));
+        newpath.Remove(closestVoxel);
+        path.AddRange(newpath);
     }
 
     void RandomWalk(List<Voxel> path)
