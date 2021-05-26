@@ -70,11 +70,11 @@ public class RandomWalk
             {
                 z++;
             }
-            else if(choice == 5)
+            else if (choice == 5)
             {
                 z--;
             }
-            
+
             return choice;
         }
     }

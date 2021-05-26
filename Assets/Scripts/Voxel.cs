@@ -6,7 +6,7 @@ using EasyGraph;
 
 // Sources: https://github.com/daversd/RC4_M1_C3.git
 
-//public enum VoxelState { Dead = 0, Alive = 1, Available = 2}
+public enum VoxelState { Dead = 0, Alive = 1, Available = 2}
 public class Voxel : IEquatable<Voxel>
 {
     #region Public Fields
@@ -14,6 +14,8 @@ public class Voxel : IEquatable<Voxel>
     public Vector3 Center => (Index + _voxelGrid.Origin) * _size;
     public bool IsActive;
     public bool IsOrigin;
+    public GameObject VoxelGO;
+
     public bool IsTarget
     {
         get
@@ -29,7 +31,6 @@ public class Voxel : IEquatable<Voxel>
                 VoxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
                 VoxelGO.tag = "Node";
                 VoxelGO.transform.GetChild(0).gameObject.SetActive(false);
-                
             }
             else
             {
@@ -40,9 +41,7 @@ public class Voxel : IEquatable<Voxel>
         }
     }
 
-    public GameObject VoxelGO;
     public bool IsPath;
-
     public bool IsRandomPath;
 
     #endregion
@@ -61,6 +60,9 @@ public class Voxel : IEquatable<Voxel>
     UndirecteGraph<GameObject, Edge<GameObject>> _undirectedGraph;
     List<GameObject> _edgeLines;
     Dijkstra<GameObject, Edge<GameObject>> _dijkstra;
+
+    //public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //public GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
     #region Contructors
     public Voxel(Vector3Int index, VoxelGrid voxelgrid, GameObject voxelGameObject)
@@ -95,7 +97,7 @@ public class Voxel : IEquatable<Voxel>
     {
         if (!IsTarget && !IsPath)
         {
-            VoxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/RandomPath");
+            VoxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
             VoxelGO.tag = "RandomPathVoxel";
             IsRandomPath = true;
 

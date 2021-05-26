@@ -8,7 +8,6 @@ public class VoxelGrid
 {
     #region Fields
     public float VoxelSize { get; private set; }
-
     public Voxel[,,] Voxels;
     public Vector3 Origin;
     public Vector3 Corner;
@@ -30,8 +29,7 @@ public class VoxelGrid
 
         //Create Prefab in Unity
         var prefab = Resources.Load<GameObject>("Prefabs/Node");
-        //GameObject voxelPrefab = Resources.Load<GameObject>("Prefabs/Node");
-
+ 
         //Initiate the Voxel array
         Voxels = new Voxel[GridSize.x, GridSize.y, GridSize.z];
         
@@ -64,7 +62,7 @@ public class VoxelGrid
 
         VoxelGraph = new UndirecteGraph<Voxel, Edge<Voxel>>(_edges);
         _edgeLines = new List<GameObject>();
-        ResetGraphLines();
+        //ResetGraphLines();
     }
 
     void ResetGraphLines()
