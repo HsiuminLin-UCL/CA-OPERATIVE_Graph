@@ -55,7 +55,6 @@ public class VoxelGrid
                 }
             }
         }
-
         MakeFaces();
         MakeCorners();
         MakeEdges();
@@ -81,7 +80,6 @@ public class VoxelGrid
 
         VoxelGraph = new UndirecteGraph<Voxel, Edge<Voxel>>(_edges);
         _edgeLines = new List<GameObject>();
-
         //ResetGraphLines();
     }
 
@@ -106,55 +104,6 @@ public class VoxelGrid
         }
 
     }
-
-    //public void GetNeighbours()
-    //{
-    //    Voxel[] neighbours = new Voxel[6];
-    //    // Add check for indices out of bounds
-    //    // if index in grid, add voxel on index
-
-    //    //CheckBounds(Vector3Int index, VoxelGrid grid)
-
-    //    if (Util.CheckBounds(Index + Vector3Int.up, GridSize))
-    //    {
-    //        neighbours[0] = Voxel[Index.x, Index.y + 1, Index.z];
-    //    }
-    //    // if index not in grid, add null;
-    //    else
-    //    {
-    //        neighbours[0] = null;
-    //    }
-
-    //    if (Util.CheckBounds(Index + Vector3Int.down, GridSize))
-    //    {
-    //        neighbours[1] = GridSize.Voxels[Index.x, Index.y - 1, Index.z];
-    //    }
-    //    else
-    //    {
-    //        neighbours[1] = null;
-    //    }
-
-    //    if (Util.CheckBounds(Index + Vector3Int.left, GridSize))
-    //    {
-    //        neighbours[2] = GridSize.Voxels[Index.x - 1, Index.y, Index.z];
-    //    }
-    //    else
-    //    {
-    //        neighbours[2] = null;
-    //    }
-
-    //    if (Util.CheckBounds(Index + Vector3Int.right, GridSize))
-    //    {
-    //        neighbours[3] = GridSize.Voxels[Index.x + 1, Index.y, Index.z];
-    //    }
-    //    else
-    //    {
-    //        neighbours[3] = null;
-    //    }
-
-    //    //Get the neighours of this voxel
-    //    return neighbours;
-    //}
 
     #endregion
 

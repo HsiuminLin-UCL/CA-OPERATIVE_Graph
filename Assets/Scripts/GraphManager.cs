@@ -121,7 +121,7 @@ public class GraphManager : MonoBehaviour
         foreach (var voxel in boundary)
         {
             //Set up the random range
-            //var random node to voxel.IsTarget   
+            //var random node to voxel.IsTarget
 
 
             //if (voxel.IsTarget)
