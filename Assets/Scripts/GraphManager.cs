@@ -86,7 +86,7 @@ public class GraphManager : MonoBehaviour
 
         //Not Sure How to Do in Here!
 
-        //Get the mesh from the site model
+        //Get the mesh from the Site model
         //Create the VoxelGrid with site mesh by 4*4(m) grid
         //Draw the line to define the ragne of VoxelGrid
         //Set up the layers by we want
@@ -94,8 +94,10 @@ public class GraphManager : MonoBehaviour
 
     public void GetBoundaryNode()
     {
-        Voxel boundarynode = new Voxel();
+        //Voxel boundarynode = new Voxel();
+        
         var neighbours = _voxel.GetFaceNeighboursArray();
+
         // If Voxel less than 5 neighbour, into the boundary list
         for (int i = 0; i < neighbours.Length; i++)
         {
