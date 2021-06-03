@@ -118,21 +118,24 @@ public class GraphManager : MonoBehaviour
     public void RamdomTargetNode()
     {
         //Call the random node in the boundary List
+        foreach (var voxel in boundary)
+        {
+            //Set up the random range
+            //var random node to voxel.IsTarget   
 
-        //Set up the random range
-        //var random node to voxel.IsTarget   
 
+            //if (voxel.IsTarget)
+            //{
+            //    _targets.Remove(voxel);
+            //    voxel.IsTarget = false;
+            //}
+            //else
+            //{
+            //    _targets.Add(voxel);
+            //    voxel.IsTarget = true;
+            //}
 
-        //if (voxel.IsTarget)
-        //{
-        //    _targets.Remove(voxel);
-        //    voxel.IsTarget = false;
-        //}
-        //else
-        //{
-        //    _targets.Add(voxel);
-        //    voxel.IsTarget = true;
-        //}
+        }
     }
 
     public void CreatePaths()
@@ -175,46 +178,71 @@ public class GraphManager : MonoBehaviour
         path.AddRange(newpath);
     }
 
-    public void PrivatePath()
+    public void PrivatePath(Voxel targetVoxel, List<Voxel> path, Dijkstra<Voxel, Edge<Voxel>> dijkstra)
     {
+        
         //Get the boundary List
-        //Remove the node occupied by the publicPath
-        //Create the random node in the boundary List
-        //var the random node into priaveNode List
+        foreach (var voxel in boundary)
+        {
+            //Remove the node occupied by the publicPath
+            //Create the random _target in the boundary List
+            //var the random _target into priaveNode List
 
+            //foreach (var voxel in privateNode)
+            //{
+
+            //}
+        }
 
         //Connect the privateNode to the publicPath
         //Use ShortestPath method
+        dijkstra.DijkstraCalculateWeights(targetVoxel);
+        Voxel closestVoxel = path.MinBy(v => dijkstra.VertexWeight(v));
+
+
         //var the path into privatePath List
 
+        foreach (var voxel in privatePath)
+        {
+            voxel.SetAsPrivatePath();
+        }
+
     }
 
-    public void PrivateVoxel()
+    public void PrivateVoxel(List<Voxel> privateNode)
     {
+        
         //Get the privateNode List
-        //Generate the voxel group with 2,3,4 different volume voxel with the privateNode List (ref M2C3)
+        //Generate the voxel group with 2,3,4 different volume voxel with the privateNode List (ref M2C3??)
         //var the voxel into privateVoxel List
+        foreach (var voxel in privateVoxel)
+        {
+            voxel.SetAsPrivatePath();
+        }
+
     }
 
 
-    public void SemiPublicVoxel()
+    public void SemiPublicVoxel(List<Voxel> privatePath, List<Voxel> privateVoxel)
     {
         //Get the List from privatePath
         //Remove the node occupied by the privateVoxel List
+        List<Voxel> semi = new List<Voxel>();
+        //semi.Remove();
+
 
         //var voxel in semipublic List
-
-        //forearch (var voxel in semipublic)
-        //{
-        //voxel.SetAsSemiPublic();
-        //}
+        foreach (var voxel in semiVoxel)
+        {
+            voxel.SetAsSemi();
+        }
     }
 
     public void FillUpPublicVoxel()
     {
         //Fill up the public voxel by remained node
         //Get the all List (publicPath,privatePath,privateNode,semiVoxel)
-        //Fill up the voxel by random.range (Combination WS)
+        //Fill up the voxel by random.range (Combination WS?? M2C3??)
         //var fill up voxel and publicPath into publicVoxel List
 
     }

@@ -19,6 +19,7 @@ public class Voxel : IEquatable<Voxel>
     public GameObject _voxelGO;
     public bool IsPath;
     public bool IsPrivatePath;
+    public bool IsSemi;
     public bool IsTarget
     {
         get
@@ -113,6 +114,17 @@ public class Voxel : IEquatable<Voxel>
             IsPrivatePath = true;
         }
     }
+
+    public void SetAsSemi()
+    {
+        if (!IsTarget && !IsPath)
+        {
+            _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Semi");
+            _voxelGO.tag = "SemiVoxel";
+            IsSemi = true;
+        }
+    }
+
 
     public void GetNeighbours()
     {
