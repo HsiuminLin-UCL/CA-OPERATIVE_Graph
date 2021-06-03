@@ -19,11 +19,14 @@ public class GraphManager : MonoBehaviour
     VoxelGrid _voxelGrid;
     List<Voxel> boundary = new List<Voxel>();
     List<Voxel> _targets = new List<Voxel>();
+
     List<Voxel> publicPath = new List<Voxel>();
     List<Voxel> privatePath = new List<Voxel>();
     List<Voxel> privateNode = new List<Voxel>();
     List<Voxel> privateVoxel = new List<Voxel>();
     List<Voxel> semiVoxel = new List<Voxel>();
+    List<Voxel> publicVoxel = new List<Voxel>();
+
     Voxel _start, _stop;
     Voxel _voxel;
 
@@ -79,7 +82,7 @@ public class GraphManager : MonoBehaviour
     #region Public Method
     public void DrawVoxelGridRange()
     {
-        //Not Sure How to Do
+        //Not Sure How to Do in Here!
 
         //Get the mesh from the site model
         //Create the VoxelGrid with site mesh by 4*4(m) grid
@@ -208,10 +211,12 @@ public class GraphManager : MonoBehaviour
     {
         //Fill up the public voxel by remained node
         //Get the all List (publicPath,privatePath,privateNode,semiVoxel)
+        //Fill up the voxel by random.range (Combination WS)
+        //var fill up voxel and publicPath into publicVoxel List
 
     }
 
-
+    #region RandomWalk
     //void RandomWalk(Voxel targetVoxel, List<Voxel> path, Dijkstra<Voxel, Edge<Voxel>> dijkstra)
     //{
     //    //Queue<Voxel> boundary = new Queue<Voxel>(_boundary);
@@ -250,6 +255,7 @@ public class GraphManager : MonoBehaviour
     //        voxel.SetAsPrivatePath();
     //    }
     //}
+    #endregion
 
     public void StartAnimation()
     {
@@ -285,6 +291,8 @@ public class GraphManager : MonoBehaviour
             }
         }
     }
+
+
     private void NodeToVoxel()
     {
         foreach (var voxel in publicPath)
@@ -300,6 +308,7 @@ public class GraphManager : MonoBehaviour
             voxel._voxelGO.transform.GetChild(0).gameObject.SetActive(false);
         }
     }
+
     private void PrivateNodeToVoxel()
     {
         foreach (var voxel in privatePath)
@@ -314,6 +323,7 @@ public class GraphManager : MonoBehaviour
             voxel._voxelGO.transform.GetChild(1).gameObject.SetActive(false);
         }
     }
+
     //private void SemiNodeToVoxel()
     //{
     //    foreach (var voxel in semiPath)
