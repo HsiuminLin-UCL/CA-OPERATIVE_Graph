@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using EasyGraph;
+using System.Linq;
 
 //public enum VoxelState { Dead = 0, Alive = 1, Available = 2 }
+public enum VoxelType { Public, Private, SemiShared, Empty }
+
 public class Voxel : IEquatable<Voxel>
 {
     #region Public Fields
@@ -105,6 +108,8 @@ public class Voxel : IEquatable<Voxel>
             IsPath = true;
         }
     }
+
+
     public void SetAsPrivatePath()
     {
         if (!IsTarget && !IsPath)
@@ -190,6 +195,20 @@ public class Voxel : IEquatable<Voxel>
         if (z != s.z - 1) yield return _voxelGrid.Voxels[x, y, z + 1];
     }
 
+    public IEnumerable<Voxel> GetFaceNeighboursInLayer()
+    {
+        int x = Index.x;
+        int y = Index.y;
+        int z = Index.z;
+        var s = _voxelGrid.GridSize;
+
+        if (x != 0) yield return _voxelGrid.Voxels[x - 1, y, z];
+        if (x != s.x - 1) yield return _voxelGrid.Voxels[x + 1, y, z];
+
+        if (z != 0) yield return _voxelGrid.Voxels[x, y, z - 1];
+        if (z != s.z - 1) yield return _voxelGrid.Voxels[x, y, z + 1];
+    }
+
     public Voxel[] GetFaceNeighboursArray()
     {
         Voxel[] result = new Voxel[6];
@@ -230,6 +249,9 @@ public class Voxel : IEquatable<Voxel>
         _voxelGO.GetComponent<MeshRenderer>().enabled = state;
         _voxelGO.GetComponent<BoxCollider>().enabled = state;
     }
+
+    public bool IsFacade => GetFaceNeighboursInLayer().Count() < 4;
+
 
     #endregion
 

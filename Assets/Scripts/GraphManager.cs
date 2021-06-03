@@ -17,18 +17,20 @@ public class GraphManager : MonoBehaviour
     
     // VoxelGrid and Voxel List
     VoxelGrid _voxelGrid;
-    List<Voxel> boundary = new List<Voxel>();
+    List<Voxel> _boundary = new List<Voxel>();
     List<Voxel> _targets = new List<Voxel>();
 
     List<Voxel> publicPath = new List<Voxel>();
     List<Voxel> privatePath = new List<Voxel>();
     List<Voxel> privateNode = new List<Voxel>();
-    List<Voxel> privateVoxel = new List<Voxel>();
+    List<Voxel> _privateVoxels = new List<Voxel>();
     List<Voxel> semiVoxel = new List<Voxel>();
     List<Voxel> publicVoxel = new List<Voxel>();
 
     Voxel _start, _stop;
     Voxel _voxel;
+
+    int _targetPrivateAmount = 5;
 
     //RandomWalk randomWalk;
     //List<Voxel> randomwalk = new List<Voxel>();
@@ -41,6 +43,7 @@ public class GraphManager : MonoBehaviour
     {
         _voxelGrid = new VoxelGrid(new Vector3Int(8, 3, 12), transform.position, 1f);
         _edges = new List<Edge<GameObject>>();
+        _boundary = _voxelGrid.GetBoundaryVoxels();
     }
 
     // Update is called once per frame
@@ -72,12 +75,42 @@ public class GraphManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            GetBoundaryNode();
+            GeneratePrivatePaths();
         }
     }
 
     #endregion
 
+    public void GeneratePrivatePaths()
+    {
+        Dijkstra<Voxel, Edge<Voxel>> dijkstra = new EasyGraph.Dijkstra<Voxel, Edge<Voxel>>(_voxelGrid.VoxelGraph);
+        int createdPaths = 0;
+        while (createdPaths < _targetPrivateAmount)
+        {
+            // get a random voxel
+            var origin = GetRandomBoundaryVoxel();
+            dijkstra.DijkstraCalculateWeights(origin);
+
+            // try to connect to the closest point in the public path of this layer
+            // if none available, use the closest point
+            Voxel target;
+            var targetsOnLayer = publicPath.Where(v => v.Index.y == origin.Index.y).ToList();
+            if (targetsOnLayer.Count > 0) target = targetsOnLayer.MinBy(v => dijkstra.VertexWeight(v));
+            else target = publicPath.MinBy(v => dijkstra.VertexWeight(v));
+
+            var path = dijkstra.GetShortestPath(origin, target);
+            foreach (var voxel in path)
+            {
+                if (!publicPath.Contains(voxel))
+                {
+                    voxel.SetAsPrivatePath();
+                    if (!_privateVoxels.Contains(voxel)) _privateVoxels.Add(voxel);
+                }
+                
+            }
+            createdPaths++;
+        }
+    }
 
     #region Public Method
     public void DrawVoxelGridRange()
@@ -92,50 +125,12 @@ public class GraphManager : MonoBehaviour
         //Set up the layers by we want
     }
 
-    public void GetBoundaryNode()
+    
+
+    public Voxel GetRandomBoundaryVoxel()
     {
-        //Voxel boundarynode = new Voxel();
-        
-        var neighbours = _voxel.GetFaceNeighboursArray();
-
-        // If Voxel less than 5 neighbour, into the boundary list
-        for (int i = 0; i < neighbours.Length; i++)
-        {
-
-            if (neighbours[5] != null)
-            {
-                if (neighbours[5].IsActive)
-                {
-                    foreach (var voxel in boundary)
-                    {
-                        Debug.Log("boundary " + boundary.Count);
-                    }
-                }
-            }
-        }
-    }
-
-    public void RamdomTargetNode()
-    {
-        //Call the random node in the boundary List
-        foreach (var voxel in boundary)
-        {
-            //Set up the random range
-            //var random node to voxel.IsTarget
-
-
-            //if (voxel.IsTarget)
-            //{
-            //    _targets.Remove(voxel);
-            //    voxel.IsTarget = false;
-            //}
-            //else
-            //{
-            //    _targets.Add(voxel);
-            //    voxel.IsTarget = true;
-            //}
-
-        }
+        var shuffledBoundary = _boundary.OrderBy(v => Random.value);
+        return shuffledBoundary.First(v => !publicPath.Contains(v));
     }
 
     public void CreatePaths()
@@ -182,7 +177,7 @@ public class GraphManager : MonoBehaviour
     {
         
         //Get the boundary List
-        foreach (var voxel in boundary)
+        foreach (var voxel in _boundary)
         {
             //Remove the node occupied by the publicPath
             //Create the random _target in the boundary List
@@ -215,7 +210,7 @@ public class GraphManager : MonoBehaviour
         //Get the privateNode List
         //Generate the voxel group with 2,3,4 different volume voxel with the privateNode List (ref M2C3??)
         //var the voxel into privateVoxel List
-        foreach (var voxel in privateVoxel)
+        foreach (var voxel in _privateVoxels)
         {
             voxel.SetAsPrivatePath();
         }
@@ -330,6 +325,7 @@ public class GraphManager : MonoBehaviour
         {
             voxel._voxelGO.transform.GetChild(0).gameObject.SetActive(true);
         }
+
     }
 
     private void ReturnNodeToVoxel()
@@ -342,14 +338,14 @@ public class GraphManager : MonoBehaviour
 
     private void PrivateNodeToVoxel()
     {
-        foreach (var voxel in privatePath)
+        foreach (var voxel in _privateVoxels)
         {
             voxel._voxelGO.transform.GetChild(1).gameObject.SetActive(true);
         }
     }
     private void ReturnPrivateNodeToVoxel()
     {
-        foreach (var voxel in privatePath)
+        foreach (var voxel in _privateVoxels)
         {
             voxel._voxelGO.transform.GetChild(1).gameObject.SetActive(false);
         }

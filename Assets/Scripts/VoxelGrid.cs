@@ -269,5 +269,19 @@ public class VoxelGrid
 
     #endregion
 
+    #region Public Methods
     
+    public List<Voxel> GetBoundaryVoxels()
+    {
+        List<Voxel> result = new List<Voxel>();
+        foreach (var voxel in GetVoxels())
+        {
+            if (voxel.IsFacade) result.Add(voxel);
+        }
+
+        return result;
+    }
+
+    #endregion
+
 }
