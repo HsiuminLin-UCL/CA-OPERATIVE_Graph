@@ -114,48 +114,48 @@ public class Voxel : IEquatable<Voxel>
         }
     }
 
-    //public void GetNeighbours()
-    //{
-    //    Voxel[] neighbours = new Voxel[6];
-    //    // Add check for indices out of bounds
-    //    // if index in grid, add voxel on index
-    //    //CheckBounds(Vector3Int index, VoxelGrid grid)
-    //    if (Util.CheckBounds(Index + Vector3Int.up, _voxelGrid))
-    //    {
-    //        neighbours[0] = Voxel[Index.x, Index.y + 1, Index.z];
-    //    }
-    //    // if index not in grid, add null;
-    //    else
-    //    {
-    //        neighbours[0] = null;
-    //    }
-    //    if (Util.CheckBounds(Index + Vector3Int.down, _voxelGrid))
-    //    {
-    //        neighbours[1] = _voxelGrid.Voxels[Index.x, Index.y - 1, Index.z];
-    //    }
-    //    else
-    //    {
-    //        neighbours[1] = null;
-    //    }
-    //    if (Util.CheckBounds(Index + Vector3Int.left, _voxelGrid))
-    //    {
-    //        neighbours[2] = _voxelGrid.Voxels[Index.x - 1, Index.y, Index.z];
-    //    }
-    //    else
-    //    {
-    //        neighbours[2] = null;
-    //    }
-    //    if (Util.CheckBounds(Index + Vector3Int.right, _voxelGrid))
-    //    {
-    //        neighbours[3] = _voxelGrid.Voxels[Index.x + 1, Index.y, Index.z];
-    //    }
-    //    else
-    //    {
-    //        neighbours[3] = null;
-    //    }
-    //    //Get the neighours of this voxel
-    //    return neighbours;
-    //}
+    public void GetNeighbours()
+    {
+        Voxel[] neighbours = new Voxel[6];
+        // Add check for indices out of bounds
+        // if index in grid, add voxel on index
+        //CheckBounds(Vector3Int index, VoxelGrid grid)
+        if (Util.CheckBounds(Index + Vector3Int.up, _voxelGrid))
+        {
+            neighbours[0] = _voxelGrid.Voxels[Index.x, Index.y + 1, Index.z];
+        }
+        // if index not in grid, add null;
+        else
+        {
+            neighbours[0] = null;
+        }
+        if (Util.CheckBounds(Index + Vector3Int.down, _voxelGrid))
+        {
+            neighbours[1] = _voxelGrid.Voxels[Index.x, Index.y - 1, Index.z];
+        }
+        else
+        {
+            neighbours[1] = null;
+        }
+        if (Util.CheckBounds(Index + Vector3Int.left, _voxelGrid))
+        {
+            neighbours[2] = _voxelGrid.Voxels[Index.x - 1, Index.y, Index.z];
+        }
+        else
+        {
+            neighbours[2] = null;
+        }
+        if (Util.CheckBounds(Index + Vector3Int.right, _voxelGrid))
+        {
+            neighbours[3] = _voxelGrid.Voxels[Index.x + 1, Index.y, Index.z];
+        }
+        else
+        {
+            neighbours[3] = null;
+        }
+        //Get the neighours of this voxel
+        //return neighbours;
+    }
 
     /// <summary>
     /// Get the neighbouring voxels at each face, if it exists

@@ -72,7 +72,7 @@ public class GraphManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-
+            GetBoundaryNode();
         }
     }
 
@@ -94,16 +94,15 @@ public class GraphManager : MonoBehaviour
 
     public void GetBoundaryNode()
     {
-        
+        Voxel boundarynode = new Voxel();
         var neighbours = _voxel.GetFaceNeighboursArray();
-
         // If Voxel less than 5 neighbour, into the boundary list
-
         for (int i = 0; i < neighbours.Length; i++)
         {
-            if (neighbours[i] != null)
+
+            if (neighbours[5] != null)
             {
-                if (neighbours[i].IsActive)
+                if (neighbours[5].IsActive)
                 {
                     foreach (var voxel in boundary)
                     {
