@@ -82,6 +82,8 @@ public class GraphManager : MonoBehaviour
     #region Public Method
     public void DrawVoxelGridRange()
     {
+        //Draw the Grid Range to Define the Bounding of our Building
+
         //Not Sure How to Do in Here!
 
         //Get the mesh from the site model
