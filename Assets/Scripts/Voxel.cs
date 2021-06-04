@@ -5,8 +5,7 @@ using System;
 using EasyGraph;
 using System.Linq;
 
-//public enum VoxelState { Dead = 0, Alive = 1, Available = 2 }
-public enum VoxelType { Public, Private, SemiShared, Empty }
+public enum VoxelType { Empty, Public, Private, Semi}
 
 public class Voxel : IEquatable<Voxel>
 {
@@ -28,6 +27,7 @@ public class Voxel : IEquatable<Voxel>
         get
         {
             return _isTarget;
+            
         }
         set
         {
@@ -250,6 +250,7 @@ public class Voxel : IEquatable<Voxel>
         _voxelGO.GetComponent<BoxCollider>().enabled = state;
     }
 
+    
     public bool IsFacade => GetFaceNeighboursInLayer().Count() < 4;
 
 

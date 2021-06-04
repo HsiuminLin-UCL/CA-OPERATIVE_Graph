@@ -13,6 +13,8 @@ TagManager:
   - Voxel
   - Path
   - RandomPathVoxel
+  - PrivatePathVoxel
+  - SemiVoxel
   layers:
   - Default
   - TransparentFX
