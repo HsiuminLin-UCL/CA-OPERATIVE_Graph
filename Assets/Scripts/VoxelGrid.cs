@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using EasyGraph;
 
+public enum LineType { Empty, Public, Private, Semi}
 public class VoxelGrid
 {
     #region Public fields
@@ -22,6 +23,7 @@ public class VoxelGrid
     List<Edge<Voxel>> _edges;
     List<GameObject> _edgeLines;
     Dijkstra<Voxel, Edge<Voxel>> _dijkstra;
+    public GameObject _line;
 
     #endregion
 
@@ -281,6 +283,37 @@ public class VoxelGrid
 
         return result;
     }
+
+
+    public LineType _lineType;
+
+    public LineType Status
+    {
+        get
+        {
+            return LineType.Empty;
+        }
+        set
+        {
+            _line.SetActive(value == LineType.Empty);
+            _lineType = value;
+        }
+    }
+    public void SetAsPublicLine()
+    {
+        if (Status == LineType.Public)
+        {
+            _line.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
+        }
+    }
+    public void SetAsPrivateLine()
+    {
+        if (Status == LineType.Private)
+        {
+            _line.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
+        }
+    }
+
 
     #endregion
 

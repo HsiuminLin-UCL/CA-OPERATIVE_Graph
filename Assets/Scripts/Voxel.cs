@@ -5,8 +5,7 @@ using System;
 using EasyGraph;
 using System.Linq;
 
-public enum VoxelType { Empty, Public, Private, Semi}
-
+public enum VoxelType { Empty, Public, Private, Semi }
 public class Voxel : IEquatable<Voxel>
 {
     #region Public Fields
@@ -19,15 +18,17 @@ public class Voxel : IEquatable<Voxel>
     public bool IsOrigin;
     //public bool IsBoundary;
     public GameObject _voxelGO;
-    public bool IsPath;
+    public bool IsPublicPath;
+    public bool IsPrivateNode;
     public bool IsPrivatePath;
     public bool IsSemi;
-    public bool IsTarget
+    
+    
+    public bool IsTarget 
     {
         get
         {
             return _isTarget;
-            
         }
         set
         {
@@ -37,7 +38,8 @@ public class Voxel : IEquatable<Voxel>
             {
                 _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
                 _voxelGO.tag = "Node";
-                _voxelGO.transform.GetChild(0).gameObject.SetActive(false);
+                //_voxelGO.transform.GetChild(0).gameObject.SetActive(false);
+                
             }
             else
             {
@@ -47,8 +49,6 @@ public class Voxel : IEquatable<Voxel>
             }
         }
     }
-
-
     #endregion
 
     #region Private Fields
@@ -99,20 +99,96 @@ public class Voxel : IEquatable<Voxel>
     #endregion
 
     #region Public methods
-    public void SetAsPath()
+
+
+    
+    public VoxelType _voxelType;
+
+    public VoxelType Status
     {
-        if (!IsTarget)
+        get
         {
-            _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Path");
-            _voxelGO.tag = "PathVoxel";
-            IsPath = true;
+            return VoxelType.Empty;
+        }
+        set
+        {
+            _voxelGO.SetActive(value == VoxelType.Empty);
+            _voxelType = value;
         }
     }
 
+    //public bool ActivateVoxels()
+    //{
+    //    if (Status != VoxelType.Empty)
+    //    {
+    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
+    //        _voxelGO.transform.GetChild(0).gameObject.SetActive(false);
+    //        return false;
+    //    }
+    //    else
+    //    {
+    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Target");
+    //    }
+    //    return true;
+    //}
 
+
+    //public void SetAsPublicPath()
+    //{
+    //    if (!IsTarget)
+    //    {
+    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
+    //        _voxelGO.tag = "PathVoxel";
+    //        IsPath = true;
+    //    }
+    //}
+    //public void SetAsPrivatePath()
+    //{
+    //    if (!IsTarget && !IsPath)
+    //    {
+    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
+    //        _voxelGO.tag = "PrivatePathVoxel";
+    //        IsPrivatePath = true;
+    //    }
+    //}
+
+
+    public void SetAsPublicVoxel()
+    {
+        if (Status != VoxelType.Public)
+        {       
+            _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
+            _voxelGO.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+    public void SetAsPrivateVoxel()
+    {
+        if (Status != VoxelType.Private)
+        {
+            _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
+            _voxelGO.transform.GetChild(1).gameObject.SetActive(true);
+        }
+    }
+    public void SetAsSemiVoxel()
+    {
+        if (Status != VoxelType.Semi)
+        {
+            _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Semi");
+            _voxelGO.transform.GetChild(2).gameObject.SetActive(true);
+        }
+    }
+    public void SetAsPublicPath()
+    {
+        if (!IsTarget)
+        {
+            _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
+            _voxelGO.tag = "PublicPath";
+            IsPublicPath = true;
+        }
+    }
     public void SetAsPrivatePath()
     {
-        if (!IsTarget && !IsPath)
+        if (!IsTarget && !IsPublicPath)
         {
             _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
             _voxelGO.tag = "PrivatePathVoxel";
@@ -120,59 +196,29 @@ public class Voxel : IEquatable<Voxel>
         }
     }
 
-    public void SetAsSemi()
-    {
-        if (!IsTarget && !IsPath)
-        {
-            _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Semi");
-            _voxelGO.tag = "SemiVoxel";
-            IsSemi = true;
-        }
-    }
+
+    //public void SetAsPrivateVoxel()
+    //{
+    //    if (!IsTarget && !IsPath)
+    //    {
+    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
+    //        _voxelGO.tag = "PrivateVoxel";
+    //        IsPrivateVoxel = true;
+    //    }
+    //}
 
 
-    public void GetNeighbours()
-    {
-        Voxel[] neighbours = new Voxel[6];
-        // Add check for indices out of bounds
-        // if index in grid, add voxel on index
-        //CheckBounds(Vector3Int index, VoxelGrid grid)
-        if (Util.CheckBounds(Index + Vector3Int.up, _voxelGrid))
-        {
-            neighbours[0] = _voxelGrid.Voxels[Index.x, Index.y + 1, Index.z];
-        }
-        // if index not in grid, add null;
-        else
-        {
-            neighbours[0] = null;
-        }
-        if (Util.CheckBounds(Index + Vector3Int.down, _voxelGrid))
-        {
-            neighbours[1] = _voxelGrid.Voxels[Index.x, Index.y - 1, Index.z];
-        }
-        else
-        {
-            neighbours[1] = null;
-        }
-        if (Util.CheckBounds(Index + Vector3Int.left, _voxelGrid))
-        {
-            neighbours[2] = _voxelGrid.Voxels[Index.x - 1, Index.y, Index.z];
-        }
-        else
-        {
-            neighbours[2] = null;
-        }
-        if (Util.CheckBounds(Index + Vector3Int.right, _voxelGrid))
-        {
-            neighbours[3] = _voxelGrid.Voxels[Index.x + 1, Index.y, Index.z];
-        }
-        else
-        {
-            neighbours[3] = null;
-        }
-        //Get the neighours of this voxel
-        //return neighbours;
-    }
+
+    //public void SetAsSemi()
+    //{
+    //    if (!IsTarget && !IsPath)
+    //    {
+    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Semi");
+    //        _voxelGO.tag = "SemiVoxel";
+    //        IsSemi = true;
+    //    }
+    //}
+
 
     /// <summary>
     /// Get the neighbouring voxels at each face, if it exists
@@ -194,6 +240,7 @@ public class Voxel : IEquatable<Voxel>
         if (z != 0) yield return _voxelGrid.Voxels[x, y, z - 1];
         if (z != s.z - 1) yield return _voxelGrid.Voxels[x, y, z + 1];
     }
+
 
     public IEnumerable<Voxel> GetFaceNeighboursInLayer()
     {
