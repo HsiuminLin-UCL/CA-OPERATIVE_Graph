@@ -59,9 +59,6 @@ public class GraphManager : MonoBehaviour
         _edges = new List<Edge<GameObject>>();
         _boundary = _voxelGrid.GetBoundaryVoxels();
 
-
-
-        
     }
 
     // Update is called once per frame
@@ -228,7 +225,6 @@ public class GraphManager : MonoBehaviour
             Debug.Log("private path " + _privatePath.Count);
         }
     }
-
 
     int x;
     int y;
