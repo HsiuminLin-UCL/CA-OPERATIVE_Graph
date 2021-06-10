@@ -75,6 +75,7 @@ public class GraphManager : MonoBehaviour
         {
             CreatePaths();
         }
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             ResetEnvironment();
@@ -104,11 +105,8 @@ public class GraphManager : MonoBehaviour
         //Test
         if (Input.GetKeyDown(KeyCode.T))
         {
-            //RandomPrivate();
+            GenerateRamdonPaths();
         }
-
-
-
     }
 
     #endregion
@@ -191,6 +189,7 @@ public class GraphManager : MonoBehaviour
             // if none available, use the closest point
 
             Voxel target;
+
             var targetsOnLayer = _publicPath.Where(v => v.Index.y == origin.Index.y).ToList();
             if (targetsOnLayer.Count > 0) target = targetsOnLayer.MinBy(v => dijkstra.VertexWeight(v));
             else target = _publicPath.MinBy(v => dijkstra.VertexWeight(v));
@@ -210,16 +209,58 @@ public class GraphManager : MonoBehaviour
         }
     }
 
-    public void RandomWalk(int time, Vector3Int Start, List<Voxel> path)
-    {
-        List<Voxel> randomwalker = new List<Voxel>();
-        //Ramdom random = new Ramdom(seed);
 
-        int walkers = 0;
-        int x;
-        int y;
-        int z;
-        int step (int rnd)
+    //Random Walk
+    public void GenerateRamdonPaths()
+    {
+        
+        int createdPaths = 0;
+        while (createdPaths < _targetPrivateAmount)
+        {
+            var boundary = _boundary;
+            var origin = _publicPath.Any();
+
+            // If walker walk to _boundary = true, else false
+            // If walker walk 2 to 5 step = true, else false
+            // If walker walk over 3 step, first step should be semi voxel
+
+            createdPaths++;
+            Debug.Log("private path " + _privatePath.Count);
+        }
+    }
+
+
+    int x;
+    int y;
+    int z;
+    int rnd;
+
+    public void Walker(int time, Vector3Int Start)
+    {
+        List<Vector3Int> Walker = new List<Vector3Int>();
+
+        for (int i = 0; i < time; i++)
+        {
+            int rnd = Random.Range(0, 5);
+            step(rnd);
+            Walker.Add(pos());
+        }
+        foreach (var v in Walker)
+        {
+            Walker.Add(new Vector3Int(Start.x + v.x, Start.y + v.y, Start.z + v.z));
+        }
+
+        x = 0;
+        y = 0;
+        z = 0;
+        rnd = 0;
+
+        Vector3Int pos()
+        {
+            Vector3Int postPt = new Vector3Int(x, y, z);
+            return postPt;
+        } 
+        int step(int rnd)
         {
             int choice = rnd;
             if (choice == 0)
@@ -248,76 +289,7 @@ public class GraphManager : MonoBehaviour
             }
             return choice;
         }
-
-        //while (walkers < _targetPrivateAmount)
-        //{
-        //    var origin = _publicPath.Where(v => _publicPath.Contains(v));
-        //    var end = _boundary;
-        //    var randomwalk = new Voxel();
-
-        //    // var voxel = from origin to end 
-        //    // if the step between 3 to 5 and on the boundary = true, else false
-        //    // if = true, the first step(voxel) = semi voxel
-        //    // change step 3,4,5 voxels to different private voxel color.
-
-        //    if (randomwalker == _boundary)
-        //    {
-        //        if (//step run in 3 times.)
-        //        {
-        //            //Change voxel state
-        //        }
-
-        //        if (//step run in 4 times)
-        //        {
-        //            //change voxel state
-        //        }
-
-        //        if (//step run in 5 times)
-        //        {
-        //            //change voxel state
-        //        }
-        //        else return;
-        //    }
-
-        //    foreach (var voxel in path)
-        //    {
-        //        if (!_publicPath.Contains(voxel))
-        //        {
-        //            voxel.SetAsPrivatePath();
-        //            //voxel.SetAsPrivateVoxel();
-        //            if (!_privatePath.Contains(voxel)) _privatePath.Add(voxel);
-        //        }
-        //    }
-        //    walkers++;
-        //    Debug.Log("private path " + _privatePath.Count);
-        //}
-
     }
-
-    public void SemiPublicVoxel(List<Voxel> privatePath, List<Voxel> privateVoxel)
-    {
-        //Get the List from privatePath
-        //Remove the node occupied by the privateVoxel List
-        List<Voxel> semi = new List<Voxel>();
-        //semi.Remove();
-
-
-        //var voxel in semipublic List
-        foreach (var voxel in _semiVoxel)
-        {
-            voxel.SetAsSemiVoxel();
-        }
-    }
-
-    public void FillUpPublicVoxel()
-    {
-        //Fill up the public voxel by remained node
-        //Get the all List (publicPath,privatePath,privateNode,semiVoxel)
-        //Fill up the voxel by random.range (Combination WS?? M2C3??)
-        //var fill up voxel and publicPath into publicVoxel List
-
-    }
-
 
     #endregion
 
@@ -420,7 +392,7 @@ public class GraphManager : MonoBehaviour
 
     private void ResetEnvironment()
     {
-        
+        _publicPath.Clear();
     }
 
     private void SetClickedAsTarget()
