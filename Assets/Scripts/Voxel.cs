@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using EasyGraph;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 public enum VoxelType { Empty, Public, Private, Semi }
 public class Voxel : IEquatable<Voxel>
@@ -52,8 +53,11 @@ public class Voxel : IEquatable<Voxel>
     #endregion
 
     #region Private Fields
+
     private bool _isTarget;
-    private float _state;
+    
+    private VoxelType _voxelType = VoxelType.Empty;
+
     #endregion
 
     #region Protected fields
@@ -87,76 +91,35 @@ public class Voxel : IEquatable<Voxel>
         _voxelGO.transform.position = (_voxelGrid.Origin + Index) * _size;
         _voxelGO.transform.localScale *= _voxelGrid.VoxelSize;
         _voxelGO.name = $"Voxel_{Index.x}_{Index.y}_{Index.z}";
-        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
+        //_voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
         _voxelGO.GetComponent<VoxelTrigger>().ConnectedVoxel = this;
-    }
 
-    /// <summary>
-    /// Generic constructor, alllows the use of inheritance
-    /// </summary>
-    public Voxel() { }
+        Status = VoxelType.Empty;
+    }
 
     #endregion
 
     #region Public methods
 
-
-    
-    public VoxelType _voxelType;
-
     public VoxelType Status
     {
         get
         {
-            return VoxelType.Empty;
+            return _voxelType;
         }
         set
         {
             _voxelGO.SetActive(value == VoxelType.Empty);
             _voxelType = value;
         }
+
     }
-
-    //public bool ActivateVoxels()
-    //{
-    //    if (Status != VoxelType.Empty)
-    //    {
-    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
-    //        _voxelGO.transform.GetChild(0).gameObject.SetActive(false);
-    //        return false;
-    //    }
-    //    else
-    //    {
-    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Target");
-    //    }
-    //    return true;
-    //}
-
-
-    //public void SetAsPublicPath()
-    //{
-    //    if (!IsTarget)
-    //    {
-    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
-    //        _voxelGO.tag = "PathVoxel";
-    //        IsPath = true;
-    //    }
-    //}
-    //public void SetAsPrivatePath()
-    //{
-    //    if (!IsTarget && !IsPath)
-    //    {
-    //        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
-    //        _voxelGO.tag = "PrivatePathVoxel";
-    //        IsPrivatePath = true;
-    //    }
-    //}
-
 
     public void SetAsPublicVoxel()
     {
         if (Status != VoxelType.Public)
-        {       
+        {
+            //_voxelGO.GetComponent<VoxelTrigger>().ConnectedVoxel.Status = VoxelType.Public;
             _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
             _voxelGO.transform.GetChild(0).gameObject.SetActive(true);
         }
@@ -165,6 +128,7 @@ public class Voxel : IEquatable<Voxel>
     {
         if (Status != VoxelType.Private)
         {
+            //_voxelGO.GetComponent<VoxelTrigger>().ConnectedVoxel.Status = VoxelType.Private;
             _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
             _voxelGO.transform.GetChild(1).gameObject.SetActive(true);
         }
@@ -173,6 +137,7 @@ public class Voxel : IEquatable<Voxel>
     {
         if (Status != VoxelType.Semi)
         {
+            //_voxelGO.GetComponent<VoxelTrigger>().ConnectedVoxel.Status = VoxelType.Semi;
             _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Semi");
             _voxelGO.transform.GetChild(2).gameObject.SetActive(true);
         }
@@ -241,7 +206,6 @@ public class Voxel : IEquatable<Voxel>
         if (z != s.z - 1) yield return _voxelGrid.Voxels[x, y, z + 1];
     }
 
-
     public IEnumerable<Voxel> GetFaceNeighboursInLayer()
     {
         int x = Index.x;
@@ -256,6 +220,7 @@ public class Voxel : IEquatable<Voxel>
         if (z != s.z - 1) yield return _voxelGrid.Voxels[x, y, z + 1];
     }
 
+    
     public Voxel[] GetFaceNeighboursArray()
     {
         Voxel[] result = new Voxel[6];
@@ -284,6 +249,56 @@ public class Voxel : IEquatable<Voxel>
         else result[5] = null;
 
         return result;
+    }
+
+    public Voxel GetRamdomWalk(int time, Vector3Int start)
+    {
+        //Voxel[] walk = new Voxel[6];
+
+        int x = Index.x;
+        int y = Index.y;
+        int z = Index.z;
+        int rnd = Random.Range(0,6);
+        var s = _voxelGrid.GridSize;
+
+        //Voxel walker = new Voxel();
+
+        for (int i = 0; i < time; i++)
+        {
+            int rnd = Random.Range(0, 6);
+            walk.step(rnd);
+        }
+     
+        int step(int rnd)
+        {
+            int choice = rnd;
+            if (choice == 0)
+            {
+                x++;
+            }
+            else if (choice == 1)
+            {
+                x--;
+            }
+            else if (choice == 2)
+            {
+                y++;
+            }
+            else if (choice == 3)
+            {
+                y--;
+            }
+            else if (choice == 4)
+            {
+                z++;
+            }
+            else if (choice == 5)
+            {
+                z--;
+            }
+            return choice;
+        }
+
     }
 
 

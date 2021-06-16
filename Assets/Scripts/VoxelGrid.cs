@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using EasyGraph;
 
-public enum LineType { Empty, Public, Private, Semi}
+public enum LineType { Empty, Public, Private}
 public class VoxelGrid
 {
     #region Public fields
@@ -42,6 +42,7 @@ public class VoxelGrid
         Origin = origin;
         VoxelSize = voxelSize;
         var prefab = Resources.Load<GameObject>("Prefabs/Node");
+        
         Voxels = new Voxel[GridSize.x, GridSize.y, GridSize.z];
 
         for (int x = 0; x < GridSize.x; x++)
@@ -57,11 +58,13 @@ public class VoxelGrid
                 }
             }
         }
+
         MakeFaces();
         MakeCorners();
         MakeEdges();
         CreateGraph();
     }
+
 
     public void CreateGraph()
     {
@@ -82,8 +85,41 @@ public class VoxelGrid
 
         VoxelGraph = new UndirecteGraph<Voxel, Edge<Voxel>>(_edges);
         _edgeLines = new List<GameObject>();
+        //Status = LineType.Empty;
         //ResetGraphLines();
     }
+
+    //public LineType _lineType = LineType.Empty;
+
+    //public LineType Status
+    //{
+    //    get
+    //    {
+    //        return _lineType;
+    //    }
+    //    set
+    //    {
+    //        _line.SetActive(value == LineType.Empty);
+    //        _lineType = value;
+    //    }
+    //}
+
+    //public void SetAsPublicLine()
+    //{
+    //    if (Status == LineType.Public)
+    //    {     
+    //        _line.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
+    //    }
+    //}
+    //public void SetAsPrivateLine()
+    //{
+    //    if (Status == LineType.Private)
+    //    {
+
+    //        _line.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
+    //    }
+    //}
+
 
     public void ResetGraphLines()
     {
@@ -271,6 +307,7 @@ public class VoxelGrid
 
     #endregion
 
+
     #region Public Methods
     
     public List<Voxel> GetBoundaryVoxels()
@@ -283,37 +320,6 @@ public class VoxelGrid
 
         return result;
     }
-
-
-    public LineType _lineType;
-
-    public LineType Status
-    {
-        get
-        {
-            return LineType.Empty;
-        }
-        set
-        {
-            _line.SetActive(value == LineType.Empty);
-            _lineType = value;
-        }
-    }
-    public void SetAsPublicLine()
-    {
-        if (Status == LineType.Public)
-        {
-            _line.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Public");
-        }
-    }
-    public void SetAsPrivateLine()
-    {
-        if (Status == LineType.Private)
-        {
-            _line.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Private");
-        }
-    }
-
 
     #endregion
 

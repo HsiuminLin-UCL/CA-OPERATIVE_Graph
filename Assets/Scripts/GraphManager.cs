@@ -32,6 +32,7 @@ public class GraphManager : MonoBehaviour
     List<Voxel> _privateVoxels = new List<Voxel>();
     List<Voxel> _semiVoxel = new List<Voxel>();
     List<Voxel> _publicVoxel = new List<Voxel>();
+    List<Voxel> _walker = new List<Voxel>();
 
    
     Voxel _start, _stop;
@@ -73,11 +74,6 @@ public class GraphManager : MonoBehaviour
             CreatePaths();
         }
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            ResetEnvironment();
-        }
-
         if (Input.GetKeyDown(KeyCode.A))
         {           
             NodeToVoxel();
@@ -111,12 +107,6 @@ public class GraphManager : MonoBehaviour
     
     #region Public Method
 
-    public Voxel GetRandomBoundaryVoxel()
-    {
-        var shuffledBoundary = _boundary.OrderBy(v => Random.value);
-        return shuffledBoundary.First(v => !_publicPath.Contains(v));
-    }
-
     public void CreatePaths()
     {
         // targetPool = Queue<Voxel>(_targets) object
@@ -136,15 +126,10 @@ public class GraphManager : MonoBehaviour
         foreach (var voxel in _publicPath)
         {
             voxel.SetAsPublicPath();
-            voxel.SetAsPublicVoxel();
+            //voxel.SetAsPublicVoxel();
+            //_voxelGrid.SetAsPrivateLine();
             Debug.Log("public " + _publicPath.Count);
         }
-        foreach (var edge in _publicPath)
-        {
-            _voxelGrid.SetAsPublicLine();
-        }
-
-        //_voxelGrid.SetAsPublicLine();
     }
 
     public void SetNextShortestPath(Voxel targetVoxel, List<Voxel> path, Dijkstra<Voxel, Edge<Voxel>> dijkstra)
@@ -166,6 +151,13 @@ public class GraphManager : MonoBehaviour
         newpath.Remove(closestVoxel);
         path.AddRange(newpath);
     }
+
+    public Voxel GetRandomBoundaryVoxel()
+    {
+        var shuffledBoundary = _boundary.OrderBy(v => Random.value);
+        return shuffledBoundary.First(v => !_publicPath.Contains(v));
+    }
+
 
     public void GeneratePrivatePaths()
     {
@@ -207,84 +199,54 @@ public class GraphManager : MonoBehaviour
     }
 
 
-    //Random Walk
     public void GenerateRamdonPaths()
     {
-        
+        //GetFaceNeighboursArray - Voxel Class
+        //GetRamdomWalk - Voxel Class
+
+        // While the amount is enough then stop
         int createdPaths = 0;
         while (createdPaths < _targetPrivateAmount)
         {
-            var boundary = _boundary;
-            var origin = _publicPath.Any();
+            //Get the random start from public path
+            var origin = _publicPath.OrderBy(v => Random.value).ToList();
 
-            // If walker walk to _boundary = true, else false
-            // If walker walk 2 to 5 step = true, else false
-            // If walker walk over 3 step, first step should be semi voxel
+            //GetFaceNeighbours
+            var start = _voxel.GetFaceNeighboursArray();
 
-            createdPaths++;
-            Debug.Log("private path " + _privatePath.Count);
+            //Get the end form the _boundary List
+            var end = _boundary;
+
+            //A List contain Walker
+            List<Vector3Int> walkList = new List<Vector3Int>();
+
+            //Call a new voxel variable
+            //Voxel walker;
+            
+
+            //If walker walk to _boundary = true, else false
+
+            //If walker walk 2 to 5 step = true, else false
+
+            //If walker walk over 3 step, first step should be semi voxel
+            //var step = _semi List
+
+
+            // foreach voxels to walkList and remove the publicpath
+            // Set voxels to PrivatePath
+
+            //foreach (var voxel in walkList)
+            //{
+            //    if (!_publicPath.Contains(voxel))
+            //    {
+            //        voxel.SetAsPrivatePath();     
+            //        if (!_privatePath.Contains(voxel)) _privatePath.Add(voxel);
+            //    }
+            //}
+            //createdPaths++; // createdPaths = createdPaths + 1;
+            //Debug.Log("private path " + _privatePath.Count);
         }
-    }
 
-    int x;
-    int y;
-    int z;
-    int rnd;
-
-    public void Walker(int time, Vector3Int Start)
-    {
-        List<Vector3Int> Walker = new List<Vector3Int>();
-
-        for (int i = 0; i < time; i++)
-        {
-            int rnd = Random.Range(0, 5);
-            step(rnd);
-            Walker.Add(pos());
-        }
-        foreach (var v in Walker)
-        {
-            Walker.Add(new Vector3Int(Start.x + v.x, Start.y + v.y, Start.z + v.z));
-        }
-
-        x = 0;
-        y = 0;
-        z = 0;
-        rnd = 0;
-
-        Vector3Int pos()
-        {
-            Vector3Int postPt = new Vector3Int(x, y, z);
-            return postPt;
-        } 
-        int step(int rnd)
-        {
-            int choice = rnd;
-            if (choice == 0)
-            {
-                x++;
-            }
-            else if (choice == 1)
-            {
-                x--;
-            }
-            else if (choice == 2)
-            {
-                y++;
-            }
-            else if (choice == 3)
-            {
-                y--;
-            }
-            else if (choice == 4)
-            {
-                z++;
-            }
-            else if (choice == 5)
-            {
-                z--;
-            }
-            return choice;
-        }
     }
 
     #endregion
@@ -306,6 +268,7 @@ public class GraphManager : MonoBehaviour
     {
         StartCoroutine(PrivateNodeToVoxelAnimated());
     }
+
 
     private IEnumerator CreatePathAnimated()
     {
@@ -365,7 +328,6 @@ public class GraphManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
-
     private IEnumerator NodeToVoxelAnimated()
     {
         foreach (var voxel in _publicPath)
@@ -388,7 +350,14 @@ public class GraphManager : MonoBehaviour
 
     private void ResetEnvironment()
     {
-        _publicPath.Clear();
+        //foreach (var voxel in _dijkstra (v=>v.Status != VoxelType.Empty)
+        //{
+        //    voxel.Status = VoxelType.Empty;
+        //}
+        //_publicPath.Clear();
+        //_publicVoxel.Clear();
+        //_privateNode.Clear();
+        //_publicPath.Clear();
     }
 
     private void SetClickedAsTarget()
