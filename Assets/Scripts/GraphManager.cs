@@ -210,7 +210,7 @@ public class GraphManager : MonoBehaviour
             //Get the random walk from public path
             var origin = _publicPath.OrderBy(v => Random.value).ToList();
 
-            //GetFaceNeighbours
+            //GetWalker
             //var start = _voxel.GetRamdomWalk();
 
             //Get the end form the _boundary List
