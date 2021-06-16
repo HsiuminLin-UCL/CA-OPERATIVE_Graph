@@ -100,6 +100,7 @@ public class Voxel : IEquatable<Voxel>
     #endregion
 
     #region Public methods
+    
 
     public VoxelType Status
     {
@@ -142,6 +143,7 @@ public class Voxel : IEquatable<Voxel>
             _voxelGO.transform.GetChild(2).gameObject.SetActive(true);
         }
     }
+
     public void SetAsPublicPath()
     {
         if (!IsTarget)
@@ -251,54 +253,69 @@ public class Voxel : IEquatable<Voxel>
         return result;
     }
 
-    public Voxel GetRamdomWalk(int time, Vector3Int start)
+    public Voxel GetRamdomWalk(int time)
     {
-        //Voxel[] walk = new Voxel[6];
+        Voxel[] choice = new Voxel[6];
 
         int x = Index.x;
         int y = Index.y;
         int z = Index.z;
-        int rnd = Random.Range(0,6);
         var s = _voxelGrid.GridSize;
 
-        //Voxel walker = new Voxel();
-
-        for (int i = 0; i < time; i++)
+        //if 
+        if (true)
         {
-            int rnd = Random.Range(0, 6);
-            walk.step(rnd);
-        }
-     
-        int step(int rnd)
-        {
-            int choice = rnd;
-            if (choice == 0)
+            for (int i = 0; i < time; i++)
             {
-                x++;
+                int rnd = Random.Range(0, 6);
+                step(rnd);
+                pos();
             }
-            else if (choice == 1)
-            {
-                x--;
-            }
-            else if (choice == 2)
-            {
-                y++;
-            }
-            else if (choice == 3)
-            {
-                y--;
-            }
-            else if (choice == 4)
-            {
-                z++;
-            }
-            else if (choice == 5)
-            {
-                z--;
-            }
-            return choice;
-        }
 
+            //Position
+            Vector3Int pos()
+            {
+                Vector3Int posV = new Vector3Int(x, y, z);
+                return posV;
+            }
+
+            //Step by choice x,y,z
+            int step(int rnd)
+            {
+                int choice = rnd;
+                if (choice == 0)
+                {
+                    x++;
+                }
+                else if (choice == 1)
+                {
+                    x--;
+                }
+                else if (choice == 2)
+                {
+                    y++;
+                }
+                else if (choice == 3)
+                {
+                    y--;
+                }
+                else if (choice == 4)
+                {
+                    z++;
+                }
+                else if (choice == 5)
+                {
+                    z--;
+                }
+                return choice;
+            }
+
+        }
+        else
+        {
+            return;
+        }      
+        
     }
 
 

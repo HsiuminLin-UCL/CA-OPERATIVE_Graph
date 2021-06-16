@@ -17,6 +17,7 @@ TagManager:
   - SemiVoxel
   - PrivateVoxel
   - PublicPath
+  - BoundingMesh
   layers:
   - Default
   - TransparentFX

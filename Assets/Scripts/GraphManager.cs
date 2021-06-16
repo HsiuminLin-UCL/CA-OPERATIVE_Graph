@@ -73,7 +73,6 @@ public class GraphManager : MonoBehaviour
         {
             CreatePaths();
         }
-
         if (Input.GetKeyDown(KeyCode.A))
         {           
             NodeToVoxel();
@@ -201,35 +200,35 @@ public class GraphManager : MonoBehaviour
 
     public void GenerateRamdonPaths()
     {
-        //GetFaceNeighboursArray - Voxel Class
+
         //GetRamdomWalk - Voxel Class
 
         // While the amount is enough then stop
         int createdPaths = 0;
         while (createdPaths < _targetPrivateAmount)
         {
-            //Get the random start from public path
+            //Get the random walk from public path
             var origin = _publicPath.OrderBy(v => Random.value).ToList();
 
             //GetFaceNeighbours
-            var start = _voxel.GetFaceNeighboursArray();
+            //var start = _voxel.GetRamdomWalk();
 
             //Get the end form the _boundary List
             var end = _boundary;
 
             //A List contain Walker
-            List<Vector3Int> walkList = new List<Vector3Int>();
+            List<Voxel> _walker = new List<Voxel>();
 
             //Call a new voxel variable
             //Voxel walker;
-            
 
-            //If walker walk to _boundary = true, else false
 
-            //If walker walk 2 to 5 step = true, else false
+            //If walker walk to _boundary List = true, else return
 
-            //If walker walk over 3 step, first step should be semi voxel
-            //var step = _semi List
+            //If walker walk 2 to 5 steps(times) = true, else return
+
+            //Foreach walker walk over 3 step, the first step(time) should be semi voxel
+            //var first step(time) = _semi List
 
 
             // foreach voxels to walkList and remove the publicpath
@@ -240,9 +239,10 @@ public class GraphManager : MonoBehaviour
             //    if (!_publicPath.Contains(voxel))
             //    {
             //        voxel.SetAsPrivatePath();     
-            //        if (!_privatePath.Contains(voxel)) _privatePath.Add(voxel);
+            //        if (!_walker.Contains(voxel)) _walker.Add(voxel);
             //    }
             //}
+
             //createdPaths++; // createdPaths = createdPaths + 1;
             //Debug.Log("private path " + _privatePath.Count);
         }
