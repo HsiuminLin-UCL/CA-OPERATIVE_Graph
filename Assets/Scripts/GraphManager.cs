@@ -59,6 +59,7 @@ public class GraphManager : MonoBehaviour
 
         _edges = new List<Edge<GameObject>>();
         _boundary = _voxelGrid.GetBoundaryVoxels();
+        //_walker = _voxelGrid.GetWalkerVoxels();
 
     }
 
@@ -161,6 +162,7 @@ public class GraphManager : MonoBehaviour
     public void GeneratePrivatePaths()
     {
         Dijkstra<Voxel, Edge<Voxel>> dijkstra = new EasyGraph.Dijkstra<Voxel, Edge<Voxel>>(_voxelGrid.VoxelGraph);
+
         int createdPaths = 0;
         while (createdPaths < _targetPrivateAmount)
         {
@@ -198,20 +200,45 @@ public class GraphManager : MonoBehaviour
     }
 
 
+    //public List<Vector3Int> PrivateList = new List<Vector3Int>();
+
+    //public void RandomWalker()
+    //{
+
+    //    //List<Vector3Int> WalkList = new List<Vector3Int>();
+
+    //    //Voxel walker = new Voxel();
+
+    //    //voxel.Walker = new Voxel();
+    //    //int[] rnds = walker.GetRamdomWalk(3);
+       
+    //    //foreach (var voxel in WalkList)
+    //    //{
+    //    //    PrivateList.Add(new Vector3Int(Start.x + w.x, Start.y + w.y, Start.z + w.z));
+    //    //}
+
+    //}
+
+     public Voxel GetRandomWalkerVoxel()
+    {
+        var walkervoxels = _walker.OrderBy(v => Random.value);
+        return walkervoxels.First(v => !_publicPath.Contains(v));
+    }
+
+
     public void GenerateRamdonPaths()
     {
 
-        //GetRamdomWalk - Voxel Class
 
         // While the amount is enough then stop
         int createdPaths = 0;
         while (createdPaths < _targetPrivateAmount)
         {
+
+            //_voxel.GetRamdomWalk(5);
+
             //Get the random walk from public path
             var origin = _publicPath.OrderBy(v => Random.value).ToList();
-
-            //GetWalker
-            //var start = _voxel.GetRamdomWalk();
 
             //Get the end form the _boundary List
             var end = _boundary;
@@ -219,32 +246,35 @@ public class GraphManager : MonoBehaviour
             //A List contain Walker
             List<Voxel> _walker = new List<Voxel>();
 
-            //Call a new voxel variable
-            //Voxel walker;
+            //Random walker form origin
+            //GetRandomWalkers(origin);
 
 
             //If walker walk to _boundary List = true, else return
+            //if (_boundary.Any(v = )
+            //{
+
+            //}
 
             //If walker walk 2 to 5 steps(times) = true, else return
-
             //Foreach walker walk over 3 step, the first step(time) should be semi voxel
             //var first step(time) = _semi List
 
 
-            // foreach voxels to walkList and remove the publicpath
-            // Set voxels to PrivatePath
+            //foreach voxels to walkList and remove the publicpath
+            //Set voxels to PrivatePath
 
-            //foreach (var voxel in walkList)
-            //{
-            //    if (!_publicPath.Contains(voxel))
-            //    {
-            //        voxel.SetAsPrivatePath();     
-            //        if (!_walker.Contains(voxel)) _walker.Add(voxel);
-            //    }
-            //}
+            foreach (var voxel in _privatePath)
+            {
+                if (!_publicPath.Contains(voxel))
+                {
+                    voxel.SetAsPrivatePath();
+                    if (!_privatePath.Contains(voxel)) _privatePath.Add(voxel);
+                }
+            }
 
-            //createdPaths++; // createdPaths = createdPaths + 1;
-            //Debug.Log("private path " + _privatePath.Count);
+            createdPaths++; // createdPaths = createdPaths + 1;
+            Debug.Log("private path " + _privatePath.Count);
         }
 
     }

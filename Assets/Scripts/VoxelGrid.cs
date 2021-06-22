@@ -307,7 +307,6 @@ public class VoxelGrid
 
     #endregion
 
-
     #region Public Methods
     
     public List<Voxel> GetBoundaryVoxels()
@@ -320,6 +319,17 @@ public class VoxelGrid
 
         return result;
     }
+
+    //public List<Voxel> GetWalkerVoxels()
+    //{
+    //    List<Voxel> result = new List<Voxel>();
+    //    foreach (var voxel in GetVoxels())
+    //    {
+    //        if (voxel.IsWalker) result.Add(voxel);
+    //    }
+
+    //    return result;
+    //}
 
     #endregion
 

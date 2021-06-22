@@ -253,69 +253,71 @@ public class Voxel : IEquatable<Voxel>
         return result;
     }
 
-    public Voxel GetRamdomWalk(int time)
+    public int[] GetRandomWalk(int time)
     {
-        Voxel[] choice = new Voxel[6];
+        int[] voxels = new int[time];
 
         int x = Index.x;
         int y = Index.y;
         int z = Index.z;
-        var s = _voxelGrid.GridSize;
 
-        //if 
-        if (true)
+        for (int i = 0; i < time; i++)
         {
-            for (int i = 0; i < time; i++)
-            {
-                int rnd = Random.Range(0, 6);
-                step(rnd);
-                pos();
-            }
-
-            //Position
-            Vector3Int pos()
-            {
-                Vector3Int posV = new Vector3Int(x, y, z);
-                return posV;
-            }
-
-            //Step by choice x,y,z
-            int step(int rnd)
-            {
-                int choice = rnd;
-                if (choice == 0)
-                {
-                    x++;
-                }
-                else if (choice == 1)
-                {
-                    x--;
-                }
-                else if (choice == 2)
-                {
-                    y++;
-                }
-                else if (choice == 3)
-                {
-                    y--;
-                }
-                else if (choice == 4)
-                {
-                    z++;
-                }
-                else if (choice == 5)
-                {
-                    z--;
-                }
-                return choice;
-            }
+            int rnd = Random.Range(0, 6);
+            voxels[i] = step(rnd);
 
         }
-        else
+
+        //Step by choice x,y,z
+        int step(int rnd)
         {
-            return;
-        }      
-        
+            int choice = rnd;
+            if (choice == 0)
+            {
+                x++;
+            }
+            else if (choice == 1)
+            {
+                x--;
+            }
+            else if (choice == 2)
+            {
+                y++;
+            }
+            else if (choice == 3)
+            {
+                y--;
+            }
+            else if (choice == 4)
+            {
+                z++;
+            }
+            else if (choice == 5)
+            {
+                z--;
+            }
+            return choice;
+        }
+        return voxels;
+    }
+
+
+    public IEnumerable<Voxel> GetRandomWalkers()
+    {
+        int x = Index.x;
+        int y = Index.y;
+        int z = Index.z;
+        //var s = _voxelGrid.GridSize;
+        int rnd = Random.Range(0, 6);
+
+        int choice = rnd;
+        if (choice == 0) yield return _voxelGrid.Voxels[x ++, y, z];
+        if (choice == 1) yield return _voxelGrid.Voxels[x --, y, z];
+        if (choice == 2) yield return _voxelGrid.Voxels[x, y++, z];
+        if (choice == 3) yield return _voxelGrid.Voxels[x, y--, z];
+        if (choice == 4) yield return _voxelGrid.Voxels[x, y, z++];
+        if (choice == 5) yield return _voxelGrid.Voxels[x, y, z--];
+
     }
 
 
@@ -332,7 +334,7 @@ public class Voxel : IEquatable<Voxel>
     
     public bool IsFacade => GetFaceNeighboursInLayer().Count() < 4;
 
-
+    //public bool IsWalker => GetRandomWalk(0).Count() < 5;
     #endregion
 
     #region Equality checks
