@@ -25,6 +25,8 @@ public class VoxelGrid
     Dijkstra<Voxel, Edge<Voxel>> _dijkstra;
     public GameObject _line;
 
+    public List<Voxel> AllEmptyVoxels;
+
     #endregion
 
     #region Constructors
@@ -42,6 +44,7 @@ public class VoxelGrid
         Origin = origin;
         VoxelSize = voxelSize;
         var prefab = Resources.Load<GameObject>("Prefabs/Node");
+        AllEmptyVoxels = new List<Voxel>();
         
         Voxels = new Voxel[GridSize.x, GridSize.y, GridSize.z];
 
@@ -260,14 +263,26 @@ public class VoxelGrid
     /// Get the Voxels of the <see cref="VoxelGrid"/>
     /// </summary>
     /// <returns>All the Voxels</returns>
-    public IEnumerable<Voxel> GetVoxels()
+    //public IEnumerable<Voxel> GetVoxels()
+    //{
+    //    for (int x = 0; x < GridSize.x; x++)
+    //        for (int y = 0; y < GridSize.y; y++)
+    //            for (int z = 0; z < GridSize.z; z++)
+    //            {
+    //                yield return Voxels[x, y, z];
+    //            }
+    //}
+
+    public List<Voxel> GetVoxels()
     {
+        List<Voxel> result = new List<Voxel>();
         for (int x = 0; x < GridSize.x; x++)
             for (int y = 0; y < GridSize.y; y++)
                 for (int z = 0; z < GridSize.z; z++)
                 {
-                    yield return Voxels[x, y, z];
+                    result.Add(Voxels[x, y, z]);
                 }
+        return result;
     }
 
     /// <summary>
@@ -320,16 +335,42 @@ public class VoxelGrid
         return result;
     }
 
-    //public List<Voxel> GetWalkerVoxels()
-    //{
-    //    List<Voxel> result = new List<Voxel>();
-    //    foreach (var voxel in GetVoxels())
-    //    {
-    //        if (voxel.IsWalker) result.Add(voxel);
-    //    }
+    public void GetEmptyVoxel()
+    {
+        foreach (var voxel in GetVoxels())
+        {
+            voxel.Status = VoxelType.Empty;
+            AllEmptyVoxels.Add(voxel);
+        }
+    }
 
-    //    return result;
+
+    public void GetBoundingMesh()
+    {
+        foreach (var voxel in GetVoxels())
+        {
+            if (BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Empty;
+            AllEmptyVoxels.Add(voxel);
+        }
+    }
+
+
+    public void DisableOutsideBoundingMesh()
+    {
+        foreach (var voxel in GetVoxels())
+        {
+            if (!BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Disabled;
+        }
+    }
+
+    //public VoxelGrid VGrid;
+    //public VoxelGrid CreateVoxelGrid(Vector3Int gridDimensions, float voxelSize, Vector3 origin)
+    //{
+    //    VGrid = new VoxelGrid(gridDimensions, voxelSize, origin);
+    //    return VGrid;
     //}
+
+
 
     #endregion
 

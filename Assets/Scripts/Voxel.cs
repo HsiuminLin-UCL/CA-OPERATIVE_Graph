@@ -6,14 +6,17 @@ using EasyGraph;
 using System.Linq;
 using Random = UnityEngine.Random;
 
-public enum VoxelType { Empty, Public, Private, Semi }
+public enum VoxelType { Empty, Public, Private, Semi, Disabled }
 public class Voxel : IEquatable<Voxel>
 {
     #region Public Fields
 
     public Vector3Int Index;
     public List<Face> Faces = new List<Face>(6);
-    public Vector3 Center => (Index + _voxelGrid.Origin) * _size;
+    //public Vector3 Center => (Index + _voxelGrid.Origin) * _size;
+    public Vector3 Center => _voxelGrid.Origin + (Vector3)Index * _voxelGrid.VoxelSize 
+        + Vector3.one * 0.5f * _voxelGrid.VoxelSize;
+
     public bool IsActive;
     public bool IsOccupied;
     public bool IsOrigin;
@@ -23,9 +26,8 @@ public class Voxel : IEquatable<Voxel>
     public bool IsPrivateNode;
     public bool IsPrivatePath;
     public bool IsSemi;
-    
-    
-    public bool IsTarget 
+
+    public bool IsTarget
     {
         get
         {
@@ -40,7 +42,7 @@ public class Voxel : IEquatable<Voxel>
                 _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
                 _voxelGO.tag = "Node";
                 //_voxelGO.transform.GetChild(0).gameObject.SetActive(false);
-                
+
             }
             else
             {
@@ -55,14 +57,13 @@ public class Voxel : IEquatable<Voxel>
     #region Private Fields
 
     private bool _isTarget;
-    
-    private VoxelType _voxelType = VoxelType.Empty;
+    private VoxelType _voxelType;
+    private VoxelGrid _voxelGrid;
 
     #endregion
 
     #region Protected fields
 
-    protected VoxelGrid _voxelGrid;
     protected float _size;
 
     #endregion
@@ -91,16 +92,16 @@ public class Voxel : IEquatable<Voxel>
         _voxelGO.transform.position = (_voxelGrid.Origin + Index) * _size;
         _voxelGO.transform.localScale *= _voxelGrid.VoxelSize;
         _voxelGO.name = $"Voxel_{Index.x}_{Index.y}_{Index.z}";
-        //_voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
+        _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
         _voxelGO.GetComponent<VoxelTrigger>().ConnectedVoxel = this;
 
-        Status = VoxelType.Empty;
+        Status = VoxelType.Disabled;
+        //Status = VoxelType.Empty;
     }
 
     #endregion
 
     #region Public methods
-    
 
     public VoxelType Status
     {
@@ -222,7 +223,7 @@ public class Voxel : IEquatable<Voxel>
         if (z != s.z - 1) yield return _voxelGrid.Voxels[x, y, z + 1];
     }
 
-    
+
     public Voxel[] GetFaceNeighboursArray()
     {
         Voxel[] result = new Voxel[6];
@@ -301,23 +302,30 @@ public class Voxel : IEquatable<Voxel>
         return voxels;
     }
 
-
-    public IEnumerable<Voxel> GetRandomWalkers()
+    //Chech the voxel type is disable or public??
+    public List<Voxel> GetRandomWalkerNeighbours(Vector3Int index)
     {
-        int x = Index.x;
-        int y = Index.y;
-        int z = Index.z;
-        //var s = _voxelGrid.GridSize;
-        int rnd = Random.Range(0, 6);
+        List<Voxel> randomWalkerNeighbours = new List<Voxel>();
+        List<Vector3Int> directions = new List<Vector3Int>()
+        {
+            new Vector3Int(1,0,0),
+            new Vector3Int(-1,0,0),
+            new Vector3Int(0,1,0),
+            new Vector3Int(0,-1,0),
+        };
 
-        int choice = rnd;
-        if (choice == 0) yield return _voxelGrid.Voxels[x ++, y, z];
-        if (choice == 1) yield return _voxelGrid.Voxels[x --, y, z];
-        if (choice == 2) yield return _voxelGrid.Voxels[x, y++, z];
-        if (choice == 3) yield return _voxelGrid.Voxels[x, y--, z];
-        if (choice == 4) yield return _voxelGrid.Voxels[x, y, z++];
-        if (choice == 5) yield return _voxelGrid.Voxels[x, y, z--];
+        foreach (var direction in directions)
+        {
+            Vector3Int newIndex = index + direction;
+            if (Util.CheckBounds(newIndex, _voxelGrid))
+            {
+                Voxel neighbourVoxel = _voxelGrid.GetVoxelByIndex(newIndex);
+                if (neighbourVoxel.Status == VoxelType.Empty)
+                    randomWalkerNeighbours.Add(neighbourVoxel);
+            }
+        }
 
+        return randomWalkerNeighbours;
     }
 
 
@@ -331,7 +339,7 @@ public class Voxel : IEquatable<Voxel>
         _voxelGO.GetComponent<BoxCollider>().enabled = state;
     }
 
-    
+
     public bool IsFacade => GetFaceNeighboursInLayer().Count() < 4;
 
     //public bool IsWalker => GetRandomWalk(0).Count() < 5;

@@ -54,19 +54,19 @@ public class BoundingMesh
     {
         Physics.queriesHitBackfaces = true;
 
-        var point = voxel.Center;
+        var bounding = voxel.Center;
         var sortedHits = new Dictionary<Collider, int>();
         foreach (var collider in _colliders)
             sortedHits.Add(collider, 0);
 
-        while (Physics.Raycast(new Ray(point, Vector3.forward), out RaycastHit hit))
+        while (Physics.Raycast(new Ray(bounding, Vector3.forward), out RaycastHit hit))
         {
             var collider = hit.collider;
 
             if (sortedHits.ContainsKey(collider))
                 sortedHits[collider]++;
 
-            point = hit.point + Vector3.forward * 0.00001f;
+            bounding = hit.point + Vector3.forward * 0.00001f;
         }
 
         bool isInside = sortedHits.Any(kv => kv.Value % 2 != 0);

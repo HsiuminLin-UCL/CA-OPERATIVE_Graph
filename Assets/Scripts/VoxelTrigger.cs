@@ -5,4 +5,6 @@ using UnityEngine;
 public class VoxelTrigger : MonoBehaviour
 {
     public Voxel ConnectedVoxel;
+
+    
 }

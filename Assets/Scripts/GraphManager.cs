@@ -20,11 +20,12 @@ public class GraphManager : MonoBehaviour
     Dijkstra<GameObject, Edge<GameObject>> _dijkstra;
 
     // VoxelGrid and Voxel List
-    Vector3Int _gridSize;
+    //Vector3Int _gridSize;
     public VoxelGrid _voxelGrid { get; private set; }
 
     List<Voxel> _boundary = new List<Voxel>();
     List<Voxel> _targets = new List<Voxel>();
+    
 
     List<Voxel> _publicPath = new List<Voxel>();
     List<Voxel> _privatePath = new List<Voxel>();
@@ -32,6 +33,7 @@ public class GraphManager : MonoBehaviour
     List<Voxel> _privateVoxels = new List<Voxel>();
     List<Voxel> _semiVoxel = new List<Voxel>();
     List<Voxel> _publicVoxel = new List<Voxel>();
+    
     List<Voxel> _walker = new List<Voxel>();
 
    
@@ -39,6 +41,8 @@ public class GraphManager : MonoBehaviour
     Voxel _voxel;
 
     public int _targetPrivateAmount = 20;
+    //private int _voxelOffset = 2;
+    //private int _voxelSize = 0.2f;
 
     //PrivateVoxel[,,] _privatevoxelgroup;
     //PrivateVoxel _selected;
@@ -46,20 +50,35 @@ public class GraphManager : MonoBehaviour
     //RandomWalk randomWalk;
     //List<Voxel> randomwalk = new List<Voxel>();
     //List<Voxel> PList = new List<Voxel>();
+
     #endregion
+
+    List<Voxel> _emptyVoxels;
+    Vector3Int _gridSize = new Vector3Int(20, 6, 30);
 
     #region Unity Method
     // Start is called before the first frame update
     void Start()
     {
-        _gridSize = new Vector3Int(8, 3, 12);
         _voxelGrid = new VoxelGrid(_gridSize, transform.position, 1f);
+        //_gridSize = new Vector3Int(20, 6, 30);
+        //_voxelGrid = new VoxelGrid(new Vector3Int(20, 8, 30), transform.position, 1f);
 
-        //_voxelGrid = new VoxelGrid(new Vector3Int(8, 3, 12), transform.position, 1f);
+        //_gridSize = VoxelGrid.CreateVoxelGrid(BoundingMesh.GetGridDimensions(_voxelOffset, _voxelSize),
+        //    _voxelSize, BoundingMesh.GetOrigin(_voxelOffset, _voxelSize)
+
+        //_voxelGrid.GetEmptyVoxel();
+        _voxelGrid.GetBoundingMesh();
+        //_voxelGrid.DisableOutsideBoundingMesh();
+        _emptyVoxels = new List<Voxel>();
+
 
         _edges = new List<Edge<GameObject>>();
         _boundary = _voxelGrid.GetBoundaryVoxels();
-        //_walker = _voxelGrid.GetWalkerVoxels();
+
+        //_walker = _voxel.GetRandomWalkerNeighbours();
+
+        
 
     }
 
@@ -94,7 +113,6 @@ public class GraphManager : MonoBehaviour
         {
             GeneratePrivatePaths();
         }
-
         //Test
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -109,8 +127,11 @@ public class GraphManager : MonoBehaviour
 
     public void CreatePaths()
     {
+        _emptyVoxels = _voxelGrid.AllEmptyVoxels;
+
         // targetPool = Queue<Voxel>(_targets) object
-        Queue<Voxel> targetPool = new Queue<Voxel>(_targets);
+        //Queue<Voxel> targetPool = new Queue<Voxel>(_targets);
+        Queue<Voxel> targetPool = new Queue<Voxel>(_emptyVoxels);
 
         Dijkstra<Voxel, Edge<Voxel>> dijkstra = new EasyGraph.Dijkstra<Voxel, Edge<Voxel>>(_voxelGrid.VoxelGraph);
         _publicPath.AddRange(dijkstra.GetShortestPath(targetPool.Dequeue(), targetPool.Dequeue()));
@@ -234,17 +255,19 @@ public class GraphManager : MonoBehaviour
         int createdPaths = 0;
         while (createdPaths < _targetPrivateAmount)
         {
+            //_walker = _voxel.GetRandomWalkerNeighbours().ToList();
 
             //_voxel.GetRamdomWalk(5);
 
             //Get the random walk from public path
             var origin = _publicPath.OrderBy(v => Random.value).ToList();
+            
 
             //Get the end form the _boundary List
             var end = _boundary;
 
             //A List contain Walker
-            List<Voxel> _walker = new List<Voxel>();
+            //List<Voxel> _walker = new List<Voxel>();
 
             //Random walker form origin
             //GetRandomWalkers(origin);
@@ -390,9 +413,39 @@ public class GraphManager : MonoBehaviour
         //_publicPath.Clear();
     }
 
+    //private void SetClickedAsTarget()
+    //{
+
+    //    RaycastHit hit;
+    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+    //    if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit))
+    //    {
+    //        Transform objectHit = hit.transform;
+    //        if (objectHit.CompareTag("Node") || objectHit.CompareTag("TargetNode"))
+    //        {
+    //            Voxel voxel = objectHit.GetComponentInParent<VoxelTrigger>().ConnectedVoxel;
+
+    //            if (voxel.IsTarget)
+    //            {
+    //                _targets.Remove(voxel);
+    //                voxel.IsTarget = false;
+    //            }
+    //            else
+    //            {
+    //                _targets.Add(voxel);
+    //                voxel.IsTarget = true;
+    //            }
+    //        }
+    //    }
+    //}
+
+
+    // Can not hit the voxel now
+    // Change to VoxelType ?? 
     private void SetClickedAsTarget()
     {
-        
+
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -416,6 +469,7 @@ public class GraphManager : MonoBehaviour
             }
         }
     }
+
     private void NodeToVoxel()
     {
         foreach (var voxel in _publicPath)
