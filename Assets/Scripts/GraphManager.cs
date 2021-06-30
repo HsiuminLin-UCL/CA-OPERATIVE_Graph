@@ -240,8 +240,7 @@ public class GraphManager : MonoBehaviour
         int createdPaths = 0;
         while (createdPaths < _targetPrivateAmount)
         {
-            //
-            _time = Random.Range(0,6);
+            //_time = Random.Range(0,6);
             _walker = _voxel.GetRandomWalkerNeighbours(_time).ToList();         
 
             //Get the random walk from public path
@@ -252,12 +251,6 @@ public class GraphManager : MonoBehaviour
 
             //Random walker form origin
             Voxel walker;
-
-            var voxelwalker = _publicPath.Where(v => v.Index.y == origin.Index.y).ToList();
-            if (voxelwalker.Count > 0) walker = voxelwalker.MinBy(v => dijkstra.VertexWeight(v));
-            else walker = _publicPath.MinBy(v => dijkstra.VertexWeight(v));
-
-            var path = dijkstra.GetShortestPath(origin, walker);
 
             //If walker walk to _boundary List = true, else return
             //if (_boundary.Any(v = )
