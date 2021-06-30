@@ -37,19 +37,18 @@ public class Voxel : IEquatable<Voxel>
         {
             _isTarget = value;
 
-            if (!value)
-            {
-                _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
-                _voxelGO.tag = "Node";
-                //_voxelGO.transform.GetChild(0).gameObject.SetActive(false);
-
-            }
-            else
+            if (value)
             {
                 _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Target");
                 _voxelGO.tag = "TargetNode";
-                return;
             }
+            else
+            {              
+                _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
+                _voxelGO.tag = "Node";
+                //_voxelGO.transform.GetChild(0).gameObject.SetActive(false);
+            }
+            return;
         }
     }
     #endregion
@@ -94,14 +93,15 @@ public class Voxel : IEquatable<Voxel>
         _voxelGO.name = $"Voxel_{Index.x}_{Index.y}_{Index.z}";
         _voxelGO.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Basic");
         _voxelGO.GetComponent<VoxelTrigger>().ConnectedVoxel = this;
-
-        Status = VoxelType.Disabled;
-        //Status = VoxelType.Empty;
+        //Status = VoxelType.Disabled;
+        Status = VoxelType.Empty;
     }
 
     #endregion
 
     #region Public methods
+
+    
 
     public VoxelType Status
     {
@@ -112,7 +112,8 @@ public class Voxel : IEquatable<Voxel>
         set
         {
             _voxelGO.SetActive(value == VoxelType.Empty);
-            _voxelType = value;
+            _voxelType = value;    
+            
         }
 
     }

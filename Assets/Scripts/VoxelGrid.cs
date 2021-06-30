@@ -44,7 +44,7 @@ public class VoxelGrid
         Origin = origin;
         VoxelSize = voxelSize;
         var prefab = Resources.Load<GameObject>("Prefabs/Node");
-        AllEmptyVoxels = new List<Voxel>();
+        //AllEmptyVoxels = new List<Voxel>();
         
         Voxels = new Voxel[GridSize.x, GridSize.y, GridSize.z];
 
@@ -340,26 +340,26 @@ public class VoxelGrid
         foreach (var voxel in GetVoxels())
         {
             voxel.Status = VoxelType.Empty;
-            AllEmptyVoxels.Add(voxel);
+            //AllEmptyVoxels.Add(voxel);
         }
     }
-
 
     public void GetBoundingMesh()
     {
         foreach (var voxel in GetVoxels())
         {
-            if (BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Empty;
-            AllEmptyVoxels.Add(voxel);
+            if (BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Empty;          
+            //AllEmptyVoxels.Add(voxel);
+            
         }
     }
-
 
     public void DisableOutsideBoundingMesh()
     {
         foreach (var voxel in GetVoxels())
         {
             if (!BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Disabled;
+            //AllEmptyVoxels.Remove(voxel);
         }
     }
 
