@@ -73,6 +73,29 @@ public class BoundingMesh
         return isInside;
     }
 
+    //public static bool IsInsideCentreLine(VoxelGrid line)
+    //{
+    //    Physics.queriesHitBackfaces = true;
+
+    //    var bounding = line.Center;
+    //    var sortedHits = new Dictionary<Collider, int>();
+    //    foreach (var collider in _colliders)
+    //        sortedHits.Add(collider, 0);
+
+    //    while (Physics.Raycast(new Ray(bounding, Vector3.forward), out RaycastHit hit))
+    //    {
+    //        var collider = hit.collider;
+
+    //        if (sortedHits.ContainsKey(collider))
+    //            sortedHits[collider]++;
+
+    //        bounding = hit.point + Vector3.forward * 0.00001f;
+    //    }
+
+    //    bool isInside = sortedHits.Any(kv => kv.Value % 2 != 0);
+    //    return isInside;
+    //}
+
 
     #endregion
 }

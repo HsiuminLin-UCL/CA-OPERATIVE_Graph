@@ -27,6 +27,7 @@ public class GraphManager : MonoBehaviour
 
     List<Voxel> _boundary = new List<Voxel>();
     List<Voxel> _targets = new List<Voxel>();
+    List<Voxel> _emptyVoxels = new List<Voxel>();
     
     List<Voxel> _publicPath = new List<Voxel>();
     List<Voxel> _privatePath = new List<Voxel>();
@@ -35,7 +36,6 @@ public class GraphManager : MonoBehaviour
     List<Voxel> _semiVoxel = new List<Voxel>();
     List<Voxel> _publicVoxel = new List<Voxel>();
     List<Voxel> _walker = new List<Voxel>();
-
 
     Voxel _start, _stop;
     Voxel _voxel;
@@ -57,9 +57,11 @@ public class GraphManager : MonoBehaviour
         //_voxelGrid = new VoxelGrid(new Vector3Int(8, 4, 12), transform.position, 1f);
 
         // Get Bounding Mesh
-        _voxelGrid = new VoxelGrid(new Vector3Int(20, 6, 20), transform.position, 1f);
+        _voxelGrid = new VoxelGrid(new Vector3Int(20, 4, 14), transform.position, 1f);
         _voxelGrid.GetBoundingMesh();
-        _voxelGrid.DisableOutsideBoundingMesh();
+
+        //_voxelGrid.DisableOutsideBoundingMesh();
+        //_voxelGrid.AllEmptyVoxels = new List<Voxel>();
         //_emptyVoxels = new List<Voxel>();
 
         _edges = new List<Edge<GameObject>>();
@@ -111,13 +113,16 @@ public class GraphManager : MonoBehaviour
 
     public void CreatePaths()
     {
-        //_emptyVoxels = _voxelGrid.AllEmptyVoxels;
+        _emptyVoxels = _voxelGrid.AllEmptyVoxels;
 
         // targetPool = Queue<Voxel>(_targets) object
         Queue<Voxel> targetPool = new Queue<Voxel>(_targets);
-        //Queue<Voxel> targetPool = new Queue<Voxel>(_emptyVoxels);
+        
+        // How to Change the _voxelGrid.VoxelGraph to the emptyVoxels
 
         Dijkstra<Voxel, Edge<Voxel>> dijkstra = new EasyGraph.Dijkstra<Voxel, Edge<Voxel>>(_voxelGrid.VoxelGraph);
+        //Dijkstra<Voxel, Edge<Voxel>> dijkstra = new EasyGraph.Dijkstra<Voxel, Edge<Voxel>>(_AllEmptyVoxels);
+
         _publicPath.AddRange(dijkstra.GetShortestPath(targetPool.Dequeue(), targetPool.Dequeue()));
 
         while (targetPool.Count > 0)
@@ -403,7 +408,7 @@ public class GraphManager : MonoBehaviour
             Transform objectHit = hit.transform;
             if (objectHit.CompareTag("Node") || objectHit.CompareTag("TargetNode"))
             {
-                Voxel voxel = objectHit.GetComponentInParent<VoxelTrigger>().ConnectedVoxel;
+                Voxel voxel = objectHit.GetComponentInParent<VoxelTrigger>().ConnectedVoxel;             
 
                 if (!voxel.IsTarget)
                 {

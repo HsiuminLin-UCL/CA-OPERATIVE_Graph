@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using EasyGraph;
 
-public enum LineType { Empty, Public, Private}
+public enum LineType { Empty, Public, Private, Disabled }
 public class VoxelGrid
 {
     #region Public fields
@@ -23,11 +23,14 @@ public class VoxelGrid
     List<Edge<Voxel>> _edges;
     List<GameObject> _edgeLines;
     Dijkstra<Voxel, Edge<Voxel>> _dijkstra;
+    
     public GameObject _line;
-
     public List<Voxel> AllEmptyVoxels;
+    public List<Voxel> DisabledVoxels;
 
     #endregion
+
+    private LineType _lineType;
 
     #region Constructors
     public Voxel GetVoxelByIndex(Vector3Int index) => Voxels[index.x, index.y, index.z];
@@ -57,7 +60,7 @@ public class VoxelGrid
                     Voxels[x, y, z] = new Voxel(
                         new Vector3Int(x, y, z),
                         this,
-                        prefab);
+                        prefab);                 
                 }
             }
         }
@@ -68,6 +71,20 @@ public class VoxelGrid
         CreateGraph();
     }
 
+    public LineType Status
+    {
+        get
+        {
+            return _lineType;
+        }
+        set
+        {
+            _line.SetActive(value == LineType.Empty);
+            _lineType = value;
+
+        }
+
+    }
 
     public void CreateGraph()
     {
@@ -89,7 +106,7 @@ public class VoxelGrid
         VoxelGraph = new UndirecteGraph<Voxel, Edge<Voxel>>(_edges);
         _edgeLines = new List<GameObject>();
         //Status = LineType.Empty;
-        //ResetGraphLines();
+        ResetGraphLines();
     }
 
     //public LineType _lineType = LineType.Empty;
@@ -349,16 +366,34 @@ public class VoxelGrid
         foreach (var voxel in GetVoxels())
         {
             if (BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Empty;          
+            if (!BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Disabled;          
             //AllEmptyVoxels.Add(voxel);
-            
         }
     }
+    //public void GetBoundingMeshLine()
+    //{
+    //    foreach (var edge in GetEdges())
+    //    {
+    //        if (BoundingMesh.IsInsideCentre(edge)) Status = LineType.Empty;
+    //        if (!BoundingMesh.IsInsideCentre(edge)) Status = LineType.Disabled;
+    //    }
+    //}
+
+    //public void GetLineBoundingMesh()
+    //{
+    //    foreach (var _edgeLines in GetEdges())
+    //    {
+    //        if (BoundingMesh.IsInsideCentre(_line)) LineType.Status = VoxelType.Empty;
+    //        if (!BoundingMesh.IsInsideCentre(_line)) LineType.Status = VoxelType.Disabled;
+    //    }
+    //}
 
     public void DisableOutsideBoundingMesh()
     {
         foreach (var voxel in GetVoxels())
         {
             if (!BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Disabled;
+            //DisabledVoxels.Add(voxel);
             //AllEmptyVoxels.Remove(voxel);
         }
     }
