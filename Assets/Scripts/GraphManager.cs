@@ -59,6 +59,7 @@ public class GraphManager : MonoBehaviour
         // Get Bounding Mesh
         _voxelGrid = new VoxelGrid(new Vector3Int(20, 4, 14), transform.position, 1f);
         _voxelGrid.GetBoundingMesh();
+        //_voxelGrid.DisableBoundingMesh();
 
         //_voxelGrid.DisableOutsideBoundingMesh();
         //_voxelGrid.AllEmptyVoxels = new List<Voxel>();

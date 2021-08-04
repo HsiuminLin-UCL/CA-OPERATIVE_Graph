@@ -47,7 +47,7 @@ public class VoxelGrid
         Origin = origin;
         VoxelSize = voxelSize;
         var prefab = Resources.Load<GameObject>("Prefabs/Node");
-        //AllEmptyVoxels = new List<Voxel>();
+        AllEmptyVoxels = new List<Voxel>();
         
         Voxels = new Voxel[GridSize.x, GridSize.y, GridSize.z];
 
@@ -64,7 +64,7 @@ public class VoxelGrid
                 }
             }
         }
-
+        //Status = LineType.Empty;
         MakeFaces();
         MakeCorners();
         MakeEdges();
@@ -146,7 +146,13 @@ public class VoxelGrid
         // Adjust the Line Grid in here
         _edgeLines.ForEach(e => GameObject.Destroy(e));
         _edgeLines.Clear();
+
+
         List<Edge<Voxel>> edges = VoxelGraph.GetEdges();
+        //List<Edge<Voxel>> edges = AllEmptyVoxels.GetEdges();
+
+        
+        
         foreach (var edge in edges)
         {
             GameObject edgeLine = new GameObject($"Edge {_edgeLines.Count}");
@@ -365,19 +371,24 @@ public class VoxelGrid
     {
         foreach (var voxel in GetVoxels())
         {
-            if (BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Empty;          
-            if (!BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Disabled;          
+            if (BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Empty;
+            //if (!BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Disabled;          
             //AllEmptyVoxels.Add(voxel);
+            else
+            {
+                voxel.Status = VoxelType.Disabled;
+            }
         }
     }
-    //public void GetBoundingMeshLine()
-    //{
-    //    foreach (var edge in GetEdges())
-    //    {
-    //        if (BoundingMesh.IsInsideCentre(edge)) Status = LineType.Empty;
-    //        if (!BoundingMesh.IsInsideCentre(edge)) Status = LineType.Disabled;
-    //    }
-    //}
+
+    public void DisableBoundingMesh()
+    {
+        foreach (var voxel in GetVoxels())
+        {
+            if (!BoundingMesh.IsInsideCentre(voxel)) voxel.Status = VoxelType.Disabled;
+            //DisabledVoxels.Add(voxel);
+        }
+    }
 
     //public void GetLineBoundingMesh()
     //{
