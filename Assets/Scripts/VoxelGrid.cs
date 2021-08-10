@@ -47,7 +47,7 @@ public class VoxelGrid
         Origin = origin;
         VoxelSize = voxelSize;
         var prefab = Resources.Load<GameObject>("Prefabs/Node");
-        AllEmptyVoxels = new List<Voxel>();
+        //AllEmptyVoxels = new List<Voxel>();
         
         Voxels = new Voxel[GridSize.x, GridSize.y, GridSize.z];
 
@@ -86,9 +86,13 @@ public class VoxelGrid
 
     }
 
+    
+
     public void CreateGraph()
     {
+        AllEmptyVoxels = new List<Voxel>();
         _edges = new List<Edge<Voxel>>();
+        
 
         for (int x = 0; x < GridSize.x; x++)
         {
@@ -141,18 +145,17 @@ public class VoxelGrid
     //}
 
 
+
+    //A new list with only the edges that hold the vertices you want to use, and recreate the graph
+    //AllEmptyVoxels
     public void ResetGraphLines()
     {
         // Adjust the Line Grid in here
         _edgeLines.ForEach(e => GameObject.Destroy(e));
         _edgeLines.Clear();
 
-
         List<Edge<Voxel>> edges = VoxelGraph.GetEdges();
-        //List<Edge<Voxel>> edges = AllEmptyVoxels.GetEdges();
-
-        
-        
+  
         foreach (var edge in edges)
         {
             GameObject edgeLine = new GameObject($"Edge {_edgeLines.Count}");
@@ -378,6 +381,14 @@ public class VoxelGrid
             {
                 voxel.Status = VoxelType.Disabled;
             }
+
+
+            if (voxel.Status == VoxelType.Empty)
+            {
+                AllEmptyVoxels.Add(voxel);
+                Debug.Log("EmptyVoxels" + AllEmptyVoxels.Count);
+            }
+
         }
     }
 
